@@ -15,7 +15,15 @@ public class Huffman {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-    }
+        
+        //Comprobar entrada datos es de tipo 2xN
+        int esImpar = args.length%2;
+        //Correcto
+        if(esImpar == 0){
+            System.out.println("Tabla entrada es correcta");
+        //Incorrecto
+        }else
+            System.out.println("Tabla entrada no es correcta");
+        }
     
 }
