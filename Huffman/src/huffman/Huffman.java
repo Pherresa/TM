@@ -72,6 +72,7 @@ public class Huffman {
         //izquierda = diccionario(diccionario.length()-2);
         // for key in izquierda[0]: resultado[key] = '0' + resultado[key]
         // for key in derecha[0]: resultado[key] = '1' + resultado[key]
+        //diccionario = diccionario - 2 ultimas posiciones???
         
         System.out.println(porcentajes.get(0));
     }
