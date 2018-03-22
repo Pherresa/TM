@@ -81,7 +81,7 @@ public class Huffman {
         double suma;
         String smb, smb2;
         
-        /**
+/*        
         //obtenemos los 2 ultimos simbolos con menos peso
         smb = simbolos.get(porcentajes.get(porcentajes.size()-1));
         smb2 = simbolos.get(porcentajes.get(porcentajes.size()-2));
@@ -94,44 +94,47 @@ public class Huffman {
         simbolos.put(suma, smb+smb2);
         //Quitamos los porcentajes y añadimos la suma
         porcentajes.remove(porcentajes.size()-1);
-        porcentajes.remove(porcentajes.size()-2);
+        porcentajes.remove(porcentajes.size()-1);
         porcentajes.add(suma);
         porcentajes.size();
-        */
+*/
 
         // Vamos juntando hasta que queden 2 elementos.
-        while(porcentajes.size() > 2) {
+        for(int i = porcentajes.size(); i > 2 ; i--) {
             // Ordenamos de mas grande a mas pequeño.
             Collections.sort(porcentajes, Collections.reverseOrder());
-
+            
+            // Obtenemos simbolos con porcentaje mas bajo.
             smb = simbolos.get(porcentajes.get(porcentajes.size()-1));
             smb2 = simbolos.get(porcentajes.get(porcentajes.size()-2));
-            //Los eliminamos
+            
+            // Eliminamos simbolos, NO SE SI ES NECESARIO.
             simbolos.remove(porcentajes.get(porcentajes.size()-1));
             simbolos.remove(porcentajes.get(porcentajes.size()-2));
-            //sumamos sus porcentajes
-
+            
+            //Sumamos sus porcentajes.
             suma = porcentajes.get(porcentajes.size()-1) + porcentajes.get(porcentajes.size()-2);
-            //Añadimos el nuevo simbolo al diccionario
+            suma = Math.round(suma *100d)/100d;
+            
+            //Añadimos el nuevo simbolo al diccionario.
             simbolos.put(suma, smb+smb2);
+            
             //Quitamos los porcentajes y añadimos la suma
+            // Como lista esta ordenada habra que borrar dos veces el ultimo elemento.
             porcentajes.remove(porcentajes.size()-1);
-            porcentajes.remove(porcentajes.size()-2);
+            porcentajes.remove(porcentajes.size()-1);
             porcentajes.add(suma);
             porcentajes.size();
             
+            // Solo para comprobar
+            // que cada iteracion calcula bien.
             System.out.println("Iter");
-            for(int i = 0; i < porcentajes.size(); i++) {
-                System.out.println(porcentajes.get(i));
+            for(int j = 0; j < porcentajes.size(); j++) {
+                System.out.println(porcentajes.get(j));
             }
         }
-        
-        System.out.println("Final");
-        for(int i = 0; i < porcentajes.size(); i++) {
-            System.out.println(porcentajes.get(i));
-        }
+       
         //repetir hasta que solo haya 2 entradas en el diccionario y/o porcentajes
-        
         
         //ultima posición del dicionario izquierda, penultima derecha
         //derecha = diccionario(diccionario.lenght()-1);
@@ -139,8 +142,9 @@ public class Huffman {
         // for key in izquierda[0]: resultado[key] = '0' + resultado[key]
         // for key in derecha[0]: resultado[key] = '1' + resultado[key]
         //diccionario = diccionario - 2 ultimas posiciones???
-        
     }
+    
+    
     /** ME HECHO LA PICHA UN LIO... BORRARLO TODO SI QUIERES JAJAJA  **/
     private ArbolBinario arbol(HashMap<Double, String> simbolos, List<Double> porcentajes) {
         ArbolBinario arbol = new ArbolBinario();
