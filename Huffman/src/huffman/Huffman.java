@@ -39,7 +39,9 @@ public class Huffman {
         porcentajes.add(0.15);
         porcentajes.add(0.1);
         porcentajes.add(0.05);
+
         huffman(simbolos, porcentajes);
+        
         //Para pasar datos por argumento
         /*
         //Comprobar entrada datos es de tipo 2xN
@@ -78,6 +80,8 @@ public class Huffman {
         int derecha, izquierda;
         double suma;
         String smb, smb2;
+        
+        /**
         //obtenemos los 2 ultimos simbolos con menos peso
         smb = simbolos.get(porcentajes.get(porcentajes.size()-1));
         smb2 = simbolos.get(porcentajes.get(porcentajes.size()-2));
@@ -92,7 +96,40 @@ public class Huffman {
         porcentajes.remove(porcentajes.size()-1);
         porcentajes.remove(porcentajes.size()-2);
         porcentajes.add(suma);
+        porcentajes.size();
+        */
+
+        // Vamos juntando hasta que queden 2 elementos.
+        while(porcentajes.size() > 2) {
+            // Ordenamos de mas grande a mas pequeño.
+            Collections.sort(porcentajes, Collections.reverseOrder());
+
+            smb = simbolos.get(porcentajes.get(porcentajes.size()-1));
+            smb2 = simbolos.get(porcentajes.get(porcentajes.size()-2));
+            //Los eliminamos
+            simbolos.remove(porcentajes.get(porcentajes.size()-1));
+            simbolos.remove(porcentajes.get(porcentajes.size()-2));
+            //sumamos sus porcentajes
+
+            suma = porcentajes.get(porcentajes.size()-1) + porcentajes.get(porcentajes.size()-2);
+            //Añadimos el nuevo simbolo al diccionario
+            simbolos.put(suma, smb+smb2);
+            //Quitamos los porcentajes y añadimos la suma
+            porcentajes.remove(porcentajes.size()-1);
+            porcentajes.remove(porcentajes.size()-2);
+            porcentajes.add(suma);
+            porcentajes.size();
+            
+            System.out.println("Iter");
+            for(int i = 0; i < porcentajes.size(); i++) {
+                System.out.println(porcentajes.get(i));
+            }
+        }
         
+        System.out.println("Final");
+        for(int i = 0; i < porcentajes.size(); i++) {
+            System.out.println(porcentajes.get(i));
+        }
         //repetir hasta que solo haya 2 entradas en el diccionario y/o porcentajes
         
         
@@ -104,8 +141,55 @@ public class Huffman {
         //diccionario = diccionario - 2 ultimas posiciones???
         
     }
-
-    
+    /** ME HECHO LA PICHA UN LIO... BORRARLO TODO SI QUIERES JAJAJA  **/
+    private ArbolBinario arbol(HashMap<Double, String> simbolos, List<Double> porcentajes) {
+        ArbolBinario arbol = new ArbolBinario();
+        
+        /* 
+         * Tenemos una lista con 2 porcentajes y un dicccionario que si le damos
+         * porcentaje nos devuelve un simbolo.
+         */
+        
+        // Los primeros hijos serian
+        Nodo nodo = new Nodo(simbolos.get(porcentajes.get(0)), porcentajes.get(0));
+        Nodo nodo2 = new Nodo(simbolos.get(porcentajes.get(1)), porcentajes.get(1));
+        arbol.add2Nodos(nodo, nodo2, arbol.raiz);
+        
+        // Ahora seria hacer lo mismo con los hijos... tengo una idea pero no
+        // me acabo de aclarar :S
+        
+        // La condicion para iterar creo que no esta bien
+        // Me baso un poco en el ejercicio solucionado que hay en el campus de lo que hicimos en clase.
+        Nodo prueba = arbol.raiz; // Ya tiene hijos derecha e izquierda.
+        for(int i = 0; i < simbolos.size()-2; i++) {
+            String simb;
+            Double prob;
+            // Cogemos hijo izquierda.
+            simb = prueba.izquierda.simbolo; // Simbolo del hijo izquierdo
+            prob = prueba.izquierda.prob; // prob del hijo izquierdo
+            // Si el simbolo del hijo izquierdo es mayor de 1 caracter
+            // implica que tendra nodos hijos.
+            //Si justamente son 2, pasamos a meterlos.
+            if(prueba.izquierda.simbolo.length() == 2){
+                // Necesitaria a partir del simbolo sacar su probabilidad tmb.
+                nodo.simbolo = Character.toString(simb.charAt(0));
+                //nodo.prob =;
+                nodo2.simbolo =Character.toString(simb.charAt(1));
+                //nodo2.prob = ;
+                
+                //arbol.add2Nodos(nodo, nodo2, prueba);
+            } else {
+                
+            }
+            if(prueba.izquierda.simbolo.length() > 1) {
+                
+            }
+                
+            
+        }
+        return arbol;
+    }
+            
 
     
     
