@@ -6,10 +6,7 @@
 package huffman;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,8 +26,15 @@ public class Huffman {
         simbolos.put(0.2, "K");
         simbolos.put(0.2, "Q");
         simbolos.put(0.15, "J");
-        simbolos.put(0.1, "10");
+        simbolos.put(0.1, "Z");
         simbolos.put(0.05, "9");
+        HashMap<String, Double> simporcen = new HashMap<>();
+        simporcen.put("D", 0.3);
+        simporcen.put("K", 0.2);
+        simporcen.put("Q", 0.2);
+        simporcen.put("J", 0.15);
+        simporcen.put("Z", 0.1);
+        simporcen.put("9", 0.05);
         List<String> simbols = new ArrayList<>();
         List<Double> porcentajes = new ArrayList<>();
         porcentajes.add(0.3);
@@ -40,7 +44,7 @@ public class Huffman {
         porcentajes.add(0.1);
         porcentajes.add(0.05);
 
-        huffman(simbolos, porcentajes);
+        huffman(simbolos, porcentajes, simporcen);
         
         //Para pasar datos por argumento
         /*
@@ -73,32 +77,13 @@ public class Huffman {
         */
     }
         
-    private static void huffman(HashMap<Double, String> simbolos, List<Double> porcentajes) {
+    private static void huffman(HashMap<Double, String> simbolos, 
+                                List<Double> porcentajes, 
+                                HashMap<String, Double> simporcen) {
         System.out.println(porcentajes.size());
-        //Collections.sort(porcentajes);
-        //Collections.reverse(porcentajes);
-        int derecha, izquierda;
         double suma;
         String smb, smb2;
         
-/*        
-        //obtenemos los 2 ultimos simbolos con menos peso
-        smb = simbolos.get(porcentajes.get(porcentajes.size()-1));
-        smb2 = simbolos.get(porcentajes.get(porcentajes.size()-2));
-        //Los eliminamos
-        simbolos.remove(porcentajes.get(porcentajes.size()-1));
-        simbolos.remove(porcentajes.get(porcentajes.size()-2));
-        //sumamos sus porcentajes
-        suma = porcentajes.get(porcentajes.size()-1) + porcentajes.get(porcentajes.size()-2);
-        //Añadimos el nuevo simbolo al diccionario
-        simbolos.put(suma, smb+smb2);
-        //Quitamos los porcentajes y añadimos la suma
-        porcentajes.remove(porcentajes.size()-1);
-        porcentajes.remove(porcentajes.size()-1);
-        porcentajes.add(suma);
-        porcentajes.size();
-*/
-
         // Vamos juntando hasta que queden 2 elementos.
         for(int i = porcentajes.size(); i > 2 ; i--) {
             // Ordenamos de mas grande a mas pequeño.
@@ -133,20 +118,13 @@ public class Huffman {
                 System.out.println(porcentajes.get(j));
             }
         }
-       
-        //repetir hasta que solo haya 2 entradas en el diccionario y/o porcentajes
-        
-        //ultima posición del dicionario izquierda, penultima derecha
-        //derecha = diccionario(diccionario.lenght()-1);
-        //izquierda = diccionario(diccionario.length()-2);
-        // for key in izquierda[0]: resultado[key] = '0' + resultado[key]
-        // for key in derecha[0]: resultado[key] = '1' + resultado[key]
-        //diccionario = diccionario - 2 ultimas posiciones???
     }
     
     
     /** ME HECHO LA PICHA UN LIO... BORRARLO TODO SI QUIERES JAJAJA  **/
-    private ArbolBinario arbol(HashMap<Double, String> simbolos, List<Double> porcentajes) {
+    private ArbolBinario arbol(HashMap<Double, String> simbolos, 
+                               List<Double> porcentajes,
+                               HashMap<String, Double> simporcen) {
         ArbolBinario arbol = new ArbolBinario();
         
         /* 
@@ -177,9 +155,9 @@ public class Huffman {
             if(prueba.izquierda.simbolo.length() == 2){
                 // Necesitaria a partir del simbolo sacar su probabilidad tmb.
                 nodo.simbolo = Character.toString(simb.charAt(0));
-                //nodo.prob =;
+                nodo.prob = simporcen.get(nodo.simbolo);
                 nodo2.simbolo =Character.toString(simb.charAt(1));
-                //nodo2.prob = ;
+                nodo2.prob = simporcen.get(nodo2.simbolo);
                 
                 //arbol.add2Nodos(nodo, nodo2, prueba);
             } else {
