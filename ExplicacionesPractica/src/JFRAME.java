@@ -16,4 +16,5 @@ public class JFRAME extends JFrame {
     //ImageIcon
     // BorderLayout
     // Como generar ventana con JFRAME y Swing
+    //Classe visor a la que se le pasa la imagen -> new Visor(imagen) si imagen != null
 }
