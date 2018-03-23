@@ -30,6 +30,11 @@ public class ExplicacionesPractica {
      */
     public static void main(String[] args) throws FileNotFoundException {
         // TODO code application logic here
+        ArgParser parser = new ArgParser();
+        JCommander jComm = null;
+        try{
+            jComm = new JCommander(parser, args);
+        }
         BufferedImage imagen = null;
         //CLAS
             FileInputStream fis = new FileInputStream("ruta");
