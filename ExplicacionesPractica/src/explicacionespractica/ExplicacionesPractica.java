@@ -5,6 +5,7 @@
  */
 package explicacionespractica;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 /**
  *
@@ -30,11 +31,16 @@ public class ExplicacionesPractica {
             try{
                 imagen = ImageIO.read(fis);
                 
+                
             } catch (IOException ex) {
                 Logger.getLogger(ExplicacionesPractica.class.getName()).log(Level.SEVERE, null, ex);
             } 
             if(imagen != null){
                 //get width and bla bla bla
+                int pixelInt = imagen.getRGB(20, 10);
+                Color pixelColor = new Color(pixelInt);
+                System.out.println("R= "+ pixelColor.getRed());
+                
             }
             try {
                 fis.close();
