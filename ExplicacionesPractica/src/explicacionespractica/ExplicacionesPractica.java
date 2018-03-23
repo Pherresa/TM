@@ -7,6 +7,8 @@ package explicacionespractica;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.io.File;
 /**
  *
  * @author pablo
@@ -16,8 +18,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 public class ExplicacionesPractica {
+
+    private static int[] bandList;
 
     /**
      * @param args the command line arguments
@@ -30,6 +35,12 @@ public class ExplicacionesPractica {
             FileInputStream fis = new FileInputStream("ruta");
             try{
                 imagen = ImageIO.read(fis);
+                File f = new File("ruta");
+                ZipFile zf = new ZipFile(f);
+                zf.entries();
+                //iterar con Enumeration extends zipentry> entries = zf.entries();
+                    //ZipEntry entry = entries.nextElement();
+                
                 
                 
             } catch (IOException ex) {
@@ -40,6 +51,10 @@ public class ExplicacionesPractica {
                 int pixelInt = imagen.getRGB(20, 10);
                 Color pixelColor = new Color(pixelInt);
                 System.out.println("R= "+ pixelColor.getRed());
+                WritableRaster bitmap = (WritableRaster) imagen.getData();
+                WritableRaster tesela = bitmap.createWritableChild(pixelInt, pixelInt, pixelInt, pixelInt, pixelInt, pixelInt, bandList);
+                
+                BufferedImage nuevaIMagen = new BufferedImage(imagen.getRGB(pixelInt, pixelInt), tesela, imagen.isAlphaPremultiplied());
                 
             }
             try {
