@@ -214,8 +214,9 @@ public class Huffman {
             recorrer(nodo.derecha, tabla, bit+nodo.derecha.bit);
         }
         
-        // La parte derecha del OR, solo funciona en el apartado a.
-        if(nodo.dato.caracter.length() == 1 || nodo.dato.caracter.equals("10")) {
+        // Si no tiene hijos implica que este nodo es una hoja,
+        // es decir, un caracter/simbolo suelto.
+        if(nodo.izquierda == null && nodo.derecha == null) {
             tabla.put(nodo.dato.caracter, bit);
         }
         
