@@ -45,16 +45,15 @@ public class Main {
     public Main(Args arguments) {
         this.args = arguments;
         String res;
-        if(arguments.getCp().equals("no")){
-            res = comprimir(args.getInput(), Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
-            
-        }else{
+        if(arguments.getCp().equals("si")){
             String inputAl = "";
             for(int i = 0; i<25; i++){
                 inputAl += Math.round(Math.random());
             }
             res = comprimir(inputAl, 8, 4);
             
+        }else{
+            res = comprimir(args.getInput(), Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
         }
         System.out.println(res);
     }
