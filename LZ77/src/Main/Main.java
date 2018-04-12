@@ -45,7 +45,7 @@ public class Main {
     public Main(Args arguments) {
         this.args = arguments;
         String res;
-        if(!arguments.getCp()){
+        if(arguments.getCp().equals("no")){
             res = comprimir(args.getInput(), Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
             
         }else{
