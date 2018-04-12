@@ -11,18 +11,23 @@ import com.beust.jcommander.Parameter;
  */
 public class Args {
 
+    @Parameter(names = {"-comprueba", "-cp"}, description = "25 bits aleatorios, Mdes = 8 y Ment = 4" )
+    private boolean cp = true;
+    
+    @Parameter(names = { "-input", "-i" }, description = "Entrada de datos binaria", required = true, 
+            validateWith = inputValidator.class)
+    private String input;
 
-  @Parameter(names = { "-input", "-i" }, description = "Entrada de datos binaria", required = true, 
-          validateWith = inputValidator.class)
-  private String input;
+    @Parameter(names = {"-Ment", "-ve"}, description = "Ventana de entrada", required = true, 
+            validateWith = mentValidator.class)
+    private String ment;
 
-  @Parameter(names = {"-Ment", "-ve"}, description = "Ventana de entrada", required = true, 
-          validateWith = mentValidator.class)
-  private String ment;
-
-  @Parameter(names = {"-Mdes", "-vd"}, description = "Ventana deslizante", required = true, 
-          validateWith = mdesValidator.class)
-  private String mdes;
+    @Parameter(names = {"-Mdes", "-vd"}, description = "Ventana deslizante", required = true, 
+            validateWith = mdesValidator.class)
+    private String mdes;
+  
+  
+  
   
   
 public void checkMdes(){
@@ -37,6 +42,13 @@ public void sumVentanas(){
     }
 }
 
+    public boolean getCp(){
+        return cp;
+    }
+    
+    public void setCp(Boolean cp){
+        this.cp = cp;
+    }
     /**
      * @return the input
      */
