@@ -5,16 +5,12 @@
  */
 package Main;
 import com.beust.jcommander.Parameter;
-import java.util.ArrayList;
-import java.util.List;
 /**
  *
  * @author pablo
  */
 public class Args {
-    
-    @Parameter
-  private List<String> parameters = new ArrayList<>();
+
 
   @Parameter(names = { "-input", "-i" }, description = "Entrada de datos binaria", required = true, 
           validateWith = inputValidator.class)
@@ -40,19 +36,6 @@ public void sumVentanas(){
         System.out.println("ERROR: Las ventanas no pueden ser mayores que los datos de entrada");
     }
 }
-   /**
-     * @return the parameters
-     */
-    public List<String> getParameters() {
-        return parameters;
-    }
-
-    /**
-     * @param parameters the parameters to set
-     */
-    public void setParameters(List<String> parameters) {
-        this.parameters = parameters;
-    }
 
     /**
      * @return the input

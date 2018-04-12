@@ -12,7 +12,7 @@ import com.beust.jcommander.ParameterException;
  *
  * @author pablo
  */
-class mentValidator implements IParameterValidator {
+public class mentValidator implements IParameterValidator {
 
    @Override
     public void validate(String string, String ment) throws ParameterException {

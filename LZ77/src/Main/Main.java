@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 package Main;
-
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+
 
 /**
  *
@@ -13,27 +14,40 @@ import com.beust.jcommander.JCommander;
  */
 public class Main {
 
+    Args args;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        /*Main main = new Main();
-        JCommander.newBuilder()
-            .addObject(main)
-            .build()
-            .parse(args);
-        main.run();
-    */
-        String cadena = "11011100101001111010100010001";
-        String res;
-        res = comprimir(cadena, 8, 5);
-        System.out.println(res);
-    }
-/*
-    public void run() {
+        Args arguments = new Args();
         
-    }   */
-    
+        try{
+            JCommander jc = new JCommander(arguments, args);
+       
+            arguments.checkMdes();
+            arguments.sumVentanas();
+        }catch(ParameterException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        
+        
+        Main main2 = new Main(arguments);
+        
+       
+        String cadena = "11011100101001111010100010001";
+        //String res;
+        //res = comprimir(cadena, 8, 5);
+        //System.out.println(res);
+    }
+   
+
+    public Main(Args arguments) {
+        this.args = arguments;
+         String res;
+         res = comprimir(args.getInput(), Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
+         System.out.println(res);
+    }
     /**
      *
      * @param cadena, cadena a comprimir.
@@ -43,7 +57,7 @@ public class Main {
      */
     // Suponiendo que los datos de entrada estan todos correctos
     // Tenemos una cadena a comprimir y ventana deslizante y ventana entrada correctos.
-    public static String comprimir(String cadena, int long_vDes, int long_vEnt) {
+    public String comprimir(String cadena, int long_vDes, int long_vEnt) {
         String result = ""; // Resultado comprimido final.
         int long_cadena = cadena.length();
         int guardar; // provisional, tenemos q pasar a bits.
@@ -157,7 +171,9 @@ public class Main {
     public String int_to_bit(int n) {
         
         return "";
-    }
+    }        
+    
+    
 }
     
 
