@@ -34,17 +34,13 @@ public class Main {
         
         Main main2 = new Main(arguments);
         
-       
-        String cadena = "11011100101001111010100010001";
-        //String res;
-        //res = comprimir(cadena, 8, 5);
-        //System.out.println(res);
     }
    
 
     public Main(Args arguments) {
         this.args = arguments;
         String res;
+        /**
         if(arguments.getCp().equals("si")){
             String inputAl = "";
             for(int i = 0; i<25; i++){
@@ -54,8 +50,12 @@ public class Main {
             
         }else{
             res = comprimir(args.getInput(), Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
-        }
-        System.out.println(res);
+        }*/
+        System.out.println("String a comprimir: 11011100101001111010100010001");
+        res = comprimir("11011100101001111010100010001", 8 ,6);
+        System.out.println("Resultado de la compresion: "+res);
+        res = descomprimir(res, 8, 6);
+        System.out.println("Resultado de la descompresion: "+res);
     }
     /**
      *
@@ -67,65 +67,65 @@ public class Main {
     // Suponiendo que los datos de entrada estan todos correctos
     // Tenemos una cadena a comprimir y ventana deslizante y ventana entrada correctos.
     public String comprimir(String cadena, int long_vDes, int long_vEnt) {
-        String result = ""; // Resultado comprimido final.
-        int long_cadena = cadena.length();
-        int guardar; // provisional, tenemos q pasar a bits.
-        String mDes, mEnt;
-        boolean igual;
+        String result; // Resultado comprimido final.
+        boolean igual, acabar;
+        String mEnt, bits;
         // Para saber las posiciones finales y iniciales
-        // de las ventanas en la cadena.
+        // de las ventanas en la cadena para utilizar despues.
         int init_mDes, final_mDes, init_mEnt, final_mEnt;
         int l = 0; // Longitud que guardaremos
+        int index_inici_comparar;
+        int index_final_comparar;
         
-        // Indices de cada ventana en la cadena.
+        // Indices iniciales de las ventanas en la cadena.
         init_mDes = 0;
         final_mDes = long_vDes - 1;
         init_mEnt = long_vDes;
         final_mEnt = long_vDes + long_vEnt - 1;
-        
-        // Cogemos bits para ventana deslizante.
-        mDes = cadena.substring(init_mDes, final_mDes+1);
-        
+              
         // Primera parte de result es la primera ventana deslizante.
-        result += mDes;
+        result = cadena.substring(init_mDes, final_mDes+1);
         
         // Cogemos bits para ventana entrada.
+        // Que sera los bits que iremos comparando en la ventana deslizante.
         mEnt = cadena.substring(init_mEnt, final_mEnt + 1);
         
-        // Mientras la longitud de la ventana entrada
-        // sea igual que longitud inicial de la ventana entrada
-        while(true) {
-            //System.out.println(mDes);
-            int index_inici_comparar;
-            int index_final_comparar;
-            
-            String mEnt_prov = mEnt;
-            
-            // vEnt_long_for es la cantidad de bits que tiene ventana entrada.
-            // cuando quede solo 1 directamente guardamos en result
+        // Mientras la longitud de la ventana entrada que queda
+        // sea igual a la longitud ventana entrada inicial no pararemos.
+        acabar = false;
+        while(!acabar) {         
+            // vEnt_long_for es la cantidad de bits de Vent a comparar.
+            // Mientras no encontremos coincidencia iremos
+            // decrementando la cantidad de bits.
+            // Si llegamos a quedarnos solo con un bit, este bit
+            // lo guardamos en result y pasamos a mover ventanas.
             igual = false;
-            for(int vEnt_long_for = mEnt_prov.length(); vEnt_long_for > 1; vEnt_long_for--) {
-                mEnt_prov = cadena.substring(init_mEnt, init_mEnt + vEnt_long_for);
-                // Per poder arrastrar la ventana entrada cap a l'esquerra.
-                //long_vEnt+1, +1 porque sumo indices no longitud.
+            for(int vEnt_long_for = long_vEnt; vEnt_long_for >= 1; vEnt_long_for--) {
+                mEnt = cadena.substring(init_mEnt, init_mEnt + vEnt_long_for);
+                // Aquest for per poder arrastrar 
+                // la ventana entrada cap a l'esquerra.
+                // long_vEnt+1+i, +1 porque sumo indices no longitud.
                 // si longitud es x, indices va desde 0 a x-1.
-                for(int i = 0; (final_mDes - vEnt_long_for+1 - i) > init_mDes; i++) {
+                // +i para arrastrar a la izquierda una unidad cada iteracion.
+                for(int i = 0; (final_mDes - vEnt_long_for+1 - i) >= init_mDes; i++) {
                     // Agafem inici i final de ventana deslizante
-                    // per a despres comparar amb ventana entrada.
+                    // per despres comparar amb ventana entrada.
                     index_inici_comparar = final_mDes - vEnt_long_for+1 - i;
                     index_final_comparar = index_inici_comparar + vEnt_long_for;
 
                     // Comparem.
-                    igual = mEnt_prov.equals(cadena.substring(index_inici_comparar, index_final_comparar));
+                    igual = mEnt.equals(cadena.substring(index_inici_comparar, index_final_comparar));
+                    
                     if(igual) { // Si hem trobat coincidencia
-                        // tengo que guardar (L, D)
-                        l = vEnt_long_for;
-                        result += l; // Guardamos L.
+                        // Hem de guardar (L, D)
+                        l = vEnt_long_for; // para usarlo despues para desplazar ventanas.
+                        bits = int_to_bit(l, long_vEnt);
+                        result += bits; // Guardamos L.
+ 
                         // Restando desde el inicio de la parte de ventana deslizante
                         // que comparamos menos el init de ventana entrada obtenemos D
-                        guardar = index_inici_comparar - init_mEnt;
-                        result += guardar;
-                        //result += index_inici_comparar - init_mEnt; // Guardamos D.
+                        bits = int_to_bit(init_mEnt - index_inici_comparar, long_vDes);
+                        result += bits;
                         break; // Terminamos for de i.
                     }
                 }
@@ -135,10 +135,15 @@ public class Main {
                 }
             } // end for vent_long_prov.
             
-            // Si igual es false, quiere decir que ventana entrada se ha quedado en 1
+            // Si igual es false, quiere decir que ventana entrada se ha quedado en 1 bit
+            // sin encontrar ninguna coincidencia anterior,
             // entonces guardamos el primer bit de ventana entrada directamente.
+            // Guardaremos (1,1) tal como pide enunciado
             if(!igual) {
-                result += mEnt.substring(0, 1);
+                bits = int_to_bit(1, long_vEnt);
+                result += bits;
+                bits = int_to_bit(1, long_vDes);
+                result += bits;
             }
             
             // Aqui arrastramos ventana deslizante y entrada.
@@ -154,34 +159,130 @@ public class Main {
                 init_mEnt += 1;
                 final_mEnt += 1;
             }
-            
-            // Cogemos bits para nueva ventana deslizante.
-            mDes = cadena.substring(init_mDes, final_mDes + 1);
-            
-            // Cogemos bits para nueva ventana entrada.
-            // Si ventana entrada es mas pequeña lo que queda de bits a buscar.
-            if(final_mEnt + 1 >= cadena.length()) {
+            // Si lo que queda por buscar(vEnt) es menor a la
+            // longitud ventana entrada inicial, terminamos.
+            if(final_mEnt >= cadena.length()) {
+                acabar = true;
                 result += cadena.substring(final_mDes+1, cadena.length());
-                break;
             }
-            mEnt = cadena.substring(init_mEnt, final_mEnt + 1);
-        }
+        }// Fi while.
         
         return result;
     }
     
-    public String descomprimir() {
+    // Nos dan cadena a comprimir y pasamos a descomprimirla.
+    public String descomprimir(String cadena, int long_vDes, int long_vEnt) {
+        String result = "";
+        int num_bits_L, num_bits_D, i;
+        String bitsL, bitsD;
+        int valorL, valorD;
+        int potencia2;
+        // Calculamos los bits que ocupan (L,D).
+        // Miramos si es potencia de 2.
+        potencia2 = long_vDes & (long_vDes-1);
+        if(potencia2 == 0)
+            num_bits_D = (int) (Math.log(long_vDes) / Math.log(2));
+        else
+            num_bits_D = Integer.toBinaryString(long_vDes).length();
         
-        return "";
+        potencia2 = long_vEnt & (long_vEnt-1);
+        if(potencia2 == 0)
+            num_bits_L = (int) (Math.log(long_vEnt) / Math.log(2));
+        else
+            num_bits_L = Integer.toBinaryString(long_vEnt).length();
+        
+        // Sabemos que el principio de la cadena comprimida, con longitud vDes, 
+        // era el principio de la cadena normal.
+        result += cadena.substring(0, long_vDes);
+        // Ejemplo: Si vEnt 4 i mDes 8, avanzaremos de 5 en 5.
+        //for(i = long_vDes; i+num_bits_L+num_bits_D < cadena.length(); i += num_bits_L+num_bits_D) {
+        for(i = long_vDes; i+num_bits_L+num_bits_D < cadena.length(); i += num_bits_L+num_bits_D) {
+            // Pasamos los bits de L y D a decimal.
+            valorL = bit_to_int(cadena.substring(i, i+num_bits_L));
+            valorD = bit_to_int(cadena.substring(i+num_bits_L, i+num_bits_L+num_bits_D));
+            
+            // Empezando en la posicion result.length(), es decir,
+            // en la siguiente posicion despues del ultimo elemento,
+            // retrocedemos D posiciones y cogemos L bits y añadimos a resultado.
+            result += result.substring(result.length()-valorD, result.length()-valorD+valorL);
+        }
+        
+        // Lo que nos quede suelto al final lo añadimos a saco.
+        result += cadena.substring(i);        
+        return result;
     }
     
     // Para convertir (L,D) en 01 001(por ejemplo),
     // la explicacion esta en apartado 4, punto 2.
-    public String int_to_bit(int n) {
+    /** Ejemplo 2 bits:
+     * 1 = 01, 2 = 10, 3 = 11
+     * 4 deberia ser 100, pero se representara como 00
+     * @param n, int a transformar en bits.
+     * @param passar_a_bits, valor que lo pasaremos a bits.
+     * @return cadena de bits.
+     */
+    public String int_to_bit(int n, int passar_a_bits) {
+        int longitud_bits;
+        // Ejemplo, si es 8, i paso directo a bits me sale 1000
+        // pero yo kiero saber la cantidad de bits para representar 8 numeros
+        // es decir, 3.
+        // Comprobamos si es potencia de 2.
+        int potencia2 = passar_a_bits & (passar_a_bits-1);
+        if(potencia2 == 0) {
+            longitud_bits = (int) (Math.log(passar_a_bits) / Math.log(2));
+        } else {
+            longitud_bits = Integer.toBinaryString(passar_a_bits).length();
+        }
         
-        return "";
+        String bits = Integer.toBinaryString(n);
+        // En el caso de 2 bits, si encontramos 100,
+        // tenemos que convertilo en 00.
+        for(int i = 0; i < bits.length(); i++) {
+            // Si en alguna posicion, diferente de 0,
+            // de la cadena encuentro un bit 1
+            // o si longitud de bits es menor a la 
+            // longitud bits de ventana entrada
+            // devolver todos los bits tal cual.
+            if(i > 0 && bits.charAt(i) == '1' || bits.length() < longitud_bits){
+                // Para añadir 0 al pricinpio de la cadena
+                // Si faltasen bits.
+                for(int j = 0; bits.length() < longitud_bits; j++)
+                    bits = "0"+bits;
+                return bits;
+            }
+        }
+        // Si numero de bits es 3 y nos sale un 8 se representa como 1000
+        // para nosotros el 8 seria 000, en este ejemplo.
+        if(bits.length() > longitud_bits)
+            return bits.substring(1, bits.length());
+        
+        // Ejemplo, num bits = 3  y nos sale 100(4 en decimal),
+        // lo retornamos tal cual.
+        return bits;
+        
     }        
     
+    // Per passar de bit a decimal.
+    public int bit_to_int(String bits) {
+        int n;
+        boolean trobat = false;
+                
+        for(int i = 0; i < bits.length(); i++) {
+            if(bits.charAt(i) == '1') {
+                trobat = true;
+            }            
+        }
+        // Si no hem trobat cap 1
+        // vol dir que tindrem algo rollo 000
+        // 000 per nosaltre es 8 no 0!
+        // 0000 es 16 no 0
+        if(!trobat)
+            // Retornem 2 elevat el numero de bits.
+            return (int) Math.pow(2, bits.length());
+        
+        // Convertim binary a decimal i retornem.
+        return Integer.parseInt(bits, 2);
+    }
     
 }
     
