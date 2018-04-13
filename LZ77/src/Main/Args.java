@@ -14,32 +14,38 @@ public class Args {
     @Parameter(names = {"-comprueba", "-cp"}, description = "25 bits aleatorios, Mdes = 8 y Ment = 4", required = true )
     private String cp;
     
-    @Parameter(names = { "-input", "-i" }, description = "Entrada de datos binaria", required = true, 
-            validateWith = inputValidator.class)
-    private String input;
+    @Parameter(names = { "-longitud", "-l" }, description = "Numero entero x para generar cadena de x bits aleatorio")
+    private String longitud;
 
-    @Parameter(names = {"-Ment", "-ve"}, description = "Ventana de entrada", required = true, 
+    @Parameter(names = {"-Ment", "-ve"}, description = "Ventana de entrada",
             validateWith = mentValidator.class)
     private String ment;
 
-    @Parameter(names = {"-Mdes", "-vd"}, description = "Ventana deslizante", required = true, 
+    @Parameter(names = {"-Mdes", "-vd"}, description = "Ventana deslizante",
             validateWith = mdesValidator.class)
     private String mdes;
+    
+    @Parameter(names = { "-input", "-i" }, description = "Entrada de datos binaria", 
+            validateWith = inputValidator.class)
+    private String input;
   
   
   
   
   
-public void checkMdes(){
-    if (this.mdes.length()> this.ment.length()){
-        System.out.println("ERROR: La ventana deslizante tiene que ser menor o igual que la ventana de entrada");
+public boolean checkMdes(){
+    boolean b;
+    b = Integer.parseInt(this.mdes) <= Integer.parseInt(this.ment);
+    if (Integer.parseInt(this.mdes) <= Integer.parseInt(this.ment)){
+        System.out.println("ERROR: La ventana deslizante tiene que ser mayor o igual que la ventana de entrada");
     }
+    return b;
 }
 
-public void sumVentanas(){
-    if (this.mdes.length() + this.ment.length() > input.length()){
-        System.out.println("ERROR: Las ventanas no pueden ser mayores que los datos de entrada");
-    }
+public boolean sumVentanas(){
+    boolean b;
+    b = Integer.parseInt(this.mdes) + Integer.parseInt(this.ment) > input.length();
+    return b;
 }
 
     public String getCp(){
@@ -62,7 +68,10 @@ public void sumVentanas(){
     public void setInput(String input) {
         this.input = input;
     }
-
+    
+    public String getLongitud() {
+        return this.longitud;
+    }
     /**
      * @return the ment
      */

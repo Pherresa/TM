@@ -24,38 +24,71 @@ public class Main {
         
         try{
             JCommander jc = new JCommander(arguments, args);
-       
-            arguments.checkMdes();
-            arguments.sumVentanas();
+            if(args.length > 2) {
+                if(!arguments.checkMdes()) {
+                    Main main2 = new Main(arguments);
+                }
+            }
         }catch(ParameterException e){
             System.out.println("Error: " + e.getMessage());
         }
-        
-        
-        Main main2 = new Main(arguments);
-        
+
     }
-   
 
     public Main(Args arguments) {
         this.args = arguments;
-        String res;
-        /**
-        if(arguments.getCp().equals("si")){
-            String inputAl = "";
-            for(int i = 0; i<25; i++){
-                inputAl += Math.round(Math.random());
-            }
-            res = comprimir(inputAl, 8, 4);
+        String s = "";
+        // Si escribimos cp si o no.
+        if(arguments.getCp().equals("si") || arguments.getCp().equals("no")) {
             
-        }else{
-            res = comprimir(args.getInput(), Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
-        }*/
-        System.out.println("String a comprimir: 11011100101001111010100010001");
-        res = comprimir("11011100101001111010100010001", 8 ,6);
-        System.out.println("Resultado de la compresion: "+res);
-        res = descomprimir(res, 8, 6);
-        System.out.println("Resultado de la descompresion: "+res);
+            if(arguments.getCp().equals("si")){// Si es -cp si. // APARTADO 1
+                for(int i = 0; i<25; i++){
+                    s += Math.round(Math.random());
+                }
+                
+                System.out.println("Cadena a comprimir: "+s);
+                System.out.println("Ventana entrada: 4");
+                System.out.println("Ventana deslizante: 8");
+                s = comprimir(s, 8, 4);
+                System.out.println("Resultado de la compresion: "+s);
+                s = descomprimir(s, 8, 4);
+                System.out.println("Resultado de la descompresion: "+s);
+            
+            } else { // si es -cp no.
+                if(arguments.getInput().length() == 1) { // Si -i es 0 o 1
+                    // Cogemos valor de -l.
+                    int n = Integer.parseInt(arguments.getLongitud());
+                    for(int i = 0; i < n; i++){
+                        s += Math.round(Math.random());
+                    }
+                    System.out.println("Cadena a comprimir: "+s);
+                    System.out.println("Cadena con longitud: "+arguments.getLongitud());
+                    System.out.println("Ventana entrada: "+args.getMent());
+                    System.out.println("Ventana deslizante: "+args.getMdes());
+                    s = comprimir(s, Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
+                    System.out.println("Resultado de la compresion: "+s);
+                    s = descomprimir(s, Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
+                    System.out.println("Resultado de la descompresion: "+s);
+                    
+                } else { // si -i es cadena larga.
+                    if(arguments.sumVentanas()) { // Si suma ventanas superior a cadena i, error.
+                        System.out.println("ERROR: Las ventanas no pueden ser mayores que los datos de entrada");
+                    } else {
+                        s = args.getInput();
+                        System.out.println("Cadena a comprimir: "+s);
+                        System.out.println("Ventana entrada: "+args.getMent());
+                        System.out.println("Ventana deslizante: "+args.getMdes());
+                        s = comprimir(s, Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
+                        System.out.println("Resultado de la compresion: "+s);
+                        s = descomprimir(s, Integer.parseInt(args.getMdes()), Integer.parseInt(args.getMent()));
+                        System.out.println("Resultado de la descompresion: "+s);
+                    }
+                } 
+            }
+        } else {
+            System.out.println("Falta argumento -cp si o -cp no");
+        }
+
     }
     /**
      *
@@ -174,8 +207,7 @@ public class Main {
     public String descomprimir(String cadena, int long_vDes, int long_vEnt) {
         String result = "";
         int num_bits_L, num_bits_D, i;
-        String bitsL, bitsD;
-        int valorL, valorD;
+        int valorL = 0, valorD = 0;
         int potencia2;
         // Calculamos los bits que ocupan (L,D).
         // Miramos si es potencia de 2.
@@ -200,10 +232,11 @@ public class Main {
             // Pasamos los bits de L y D a decimal.
             valorL = bit_to_int(cadena.substring(i, i+num_bits_L));
             valorD = bit_to_int(cadena.substring(i+num_bits_L, i+num_bits_L+num_bits_D));
-            
+
             // Empezando en la posicion result.length(), es decir,
             // en la siguiente posicion despues del ultimo elemento,
             // retrocedemos D posiciones y cogemos L bits y añadimos a resultado.
+
             result += result.substring(result.length()-valorD, result.length()-valorD+valorL);
         }
         
