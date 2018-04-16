@@ -23,34 +23,28 @@ public class ArgumentParser {
     @Parameter(names = {"--decode", "-d"}, description = "Decode the images")
     private boolean decode = false;
     
-    @Parameter(names = {"--fps"}, description = "Frames per second to reproduce the video",
-            validateWith = integerValidator.class)
+    @Parameter(names = {"--fps"}, description = "Frames per second to reproduce the video")
     private int fps = 24;
     
-    @Parameter(names = {"--binarization"}, description = "Binarization filter threshold",
-            validateWith = integerValidator.class)
+    @Parameter(names = {"--binarization"}, description = "Binarization filter threshold")
     private int binarizaton = 0;
     
     @Parameter(names = {"--negative"}, description = "Apply a negative filter")
     private boolean negative = false;
     
-    @Parameter(names = {"--averaging"}, description = "Apply an average filter",
-            validateWith = integerValidator.class)
+    @Parameter(names = {"--averaging"}, description = "Apply an average filter")
     private int averaging = 0;
     
     @Parameter(names = {"--ntiles"}, description = "Number of tiles X x Y")
     private ArrayList ntiles = new ArrayList(new ArrayList());
     
-    @Parameter(names = {"--seekRange"}, description = "Maximum displacement while search adjacent tessels",
-            validateWith = integerValidator.class)
+    @Parameter(names = {"--seekRange"}, description = "Maximum displacement while search adjacent tessels")
     private int seekRange = 1;
     
-    @Parameter(names = {"--GOP",}, description = "GOP",
-            validateWith = integerValidator.class)
+    @Parameter(names = {"--GOP",}, description = "GOP")
     private int gop = 5;
     
-    @Parameter(names = {"--quality"}, description = "Quality factor to determine if two tessels are coincident",
-            validateWith = integerValidator.class)
+    @Parameter(names = {"--quality"}, description = "Quality factor to determine if two tessels are coincident")
     private int quality = 0;
     
     @Parameter(names = {"-b", "--batch"}, description = "Batch mode")
