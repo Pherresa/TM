@@ -80,16 +80,24 @@ public class Filtres {
     public BufferedImage averaging(BufferedImage image, int valor) {
         int ancho = image.getWidth();
         int alto = image.getHeight();
-        BufferedImage result = new BufferedImage(ancho, alto, BufferedImage.TYPE_3BYTE_BGR);
+        //BufferedImage result = new BufferedImage(ancho, alto, BufferedImage.TYPE_3BYTE_BGR);
+        float weight = 1.0f / (valor * valor);
+        float[] data = new float[valor * valor];
+
+        for (int i = 0; i < data.length; i++) {
+            data[i] = weight;
+        }
+        /*
         int size = valor*valor;
         float[] kernelData = new float[3];
         for(int r=0; r<valor; r++){
                 kernelData[r] = 1.0F/(float)size;
         }
-        
-        //Kernel kn = new Kernel(valor,valor,kernelData);
-        BufferedImageOp out = new ConvolveOp(new Kernel(valor,valor,kernelData));
-        result = out.filter(result, null);
+        */
+        Kernel kernel = new Kernel(valor,valor,data);
+        BufferedImageOp op = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+        //BufferedImageOp out = new ConvolveOp(new Kernel(valor,valor,data));
+        BufferedImage blurred = op.filter(image, null);
         /*
         for(int i = 0; i < ancho; i++) {
             for(int j = 0; j < alto; j++) {
@@ -137,7 +145,7 @@ public class Filtres {
             }
         }
         */
-        return result;
+        return blurred;
     }
     
     // Convertir en blanco y negro.
