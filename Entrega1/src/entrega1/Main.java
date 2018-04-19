@@ -92,7 +92,7 @@ public class Main {
                 images.add(image); // Añadimos a la lista para despues reproducir.
                 
                 //** GUARDAMOS IMAGEN EN .zip **//
-                zout.putNextEntry(new ZipEntry("result"+i+".jpeg"));
+                zout.putNextEntry(new ZipEntry("result"+String.format("%02d", i)+".jpeg"));
                 ImageIO.write(image, "jpeg", zout);
                 
                 i++;
