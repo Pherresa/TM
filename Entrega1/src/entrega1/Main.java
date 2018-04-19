@@ -9,11 +9,15 @@ import entrega1.Parser.ArgumentParser;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -47,32 +51,34 @@ public class Main {
         
         // Para poder mostrar a los fps que pida user.
         long time_before, time_after;
-        int fps = 1; // AHora mismo imprimo cada 1 segundo.
+        int fps = 10; // AHora mismo imprimo cada 1 segundo.
         int ms_sleep;
-        
+       
         BufferedImage image; // Imagen a mostrar.
         Filtres filtre = new Filtres(); // Clase donde tenemos implementado los filtros.
+        ArrayList<BufferedImage> images = new ArrayList();
         JFrame frame = new JFrame(); // Ventana donde se mostrará la imagen.
         JLabel jlabel = new JLabel(); // Etiqueta donde metemos imagen y este metemos en la ventana.
         ZipFile zf; // Para abrir archivos .zip
-        
+        ZipEntry entry;
+        FileOutputStream fous;
+        ZipOutputStream zous;
+                
         try{
             // Abrimos archivo zip
             zf = new ZipFile(this.args.getInput());
-            // Convertimos en "lista".
+            fous = new FileOutputStream(this.args.getOutput());
+            zous = new ZipOutputStream(fous); // Zip donde guardaremos.
+            
+            // Convertimos en "lista" la entrada de imagenes.
             Enumeration<? extends ZipEntry> entries = zf.entries();
             
-            // Visualizamos ventana.
-            frame.setVisible(true);
-            int i = 0;
             // Comenzamos bucle, mientras haya imagen reproduce.
-            while(entries.hasMoreElements()) {
-                // Para despues calcular si hay que hacer sleep o no.
-                i++;
-                time_before = System.currentTimeMillis();
-                
+            int i = 0;
+            while(entries.hasMoreElements()) {               
                 // Obtenemos una imagen.
-                image = ImageIO.read(zf.getInputStream(entries.nextElement()));
+                entry = entries.nextElement();
+                image = ImageIO.read(zf.getInputStream(entry));
                 
                 /** APLICAMOS FILTROS **/
                 
@@ -86,9 +92,25 @@ public class Main {
                 
                 /** HASTA AQUI FILTROS **/
                 
-                jlabel.setIcon(new ImageIcon(image)); // Añadimos la imagen al label.
+                images.add(image); // Añadimos a la lista para despues reproducir.
                 
-                // Añadimos label al frame(ventana).
+                //** Guardamos en ZIP **//
+                
+                //System.out.println(entry.getName());
+                //zous.putNextEntry(entry);
+                //ImageIO.write(image, "jpeg", new File("image"+i+".jpeg"));
+                i++;
+            }
+            zf.close(); // Cerramos archivo .zip
+            
+            // Pasamos a reproducir el video.
+            // Visualizamos ventana.
+            frame.setVisible(true);
+            for (BufferedImage img : images) {
+                
+                time_before = System.currentTimeMillis();
+                
+                jlabel.setIcon(new ImageIcon(img)); // Añadimos la imagen al label.
                 frame.getContentPane().add(jlabel);
                 frame.pack();
                 
@@ -101,13 +123,7 @@ public class Main {
                 } catch(InterruptedException e) {
                     
                 }
-                
-                // Para comprobar que efectivamente se imprime cada 1 segundo.
-                System.out.println(i);
             }
-            // Ocultamos ventana. NO SE SI HACE FALTA.
-            //frame.setVisible(false);
-            zf.close(); // Cerramos archivo .zip
 
         }catch(IOException e) {
             
