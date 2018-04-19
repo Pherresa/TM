@@ -87,10 +87,11 @@ public class Main {
                 
                 //** APLICAMOS FILTROS **//
                 if(bina){
-                    image = filtre.binaritzacio(image, 70);
+                    image = filtre.binaritzacio(image, arguments.getBinarizaton());
                 }
                 if(aver){
-                    image = filtre.averaging(image, 4);
+                    //BufferedImage bn = filtre.B_N(image);
+                    image = filtre.averaging(image, arguments.getAveraging());
                 }
                 if(arguments.isNegative()){
                     image = filtre.negatiu(image);

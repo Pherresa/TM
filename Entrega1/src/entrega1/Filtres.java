@@ -7,6 +7,9 @@ package entrega1;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 
 /**
  *
@@ -78,7 +81,16 @@ public class Filtres {
         int ancho = image.getWidth();
         int alto = image.getHeight();
         BufferedImage result = new BufferedImage(ancho, alto, BufferedImage.TYPE_3BYTE_BGR);
+        int size = valor*valor;
+        float[] kernelData = new float[3];
+        for(int r=0; r<valor; r++){
+                kernelData[r] = 1.0F/(float)size;
+        }
         
+        //Kernel kn = new Kernel(valor,valor,kernelData);
+        BufferedImageOp out = new ConvolveOp(new Kernel(valor,valor,kernelData));
+        result = out.filter(result, null);
+        /*
         for(int i = 0; i < ancho; i++) {
             for(int j = 0; j < alto; j++) {
                 double red_sum = 0.0;
@@ -109,10 +121,11 @@ public class Filtres {
                 
                 for (int k = x_range_min; k <= x_range_max; k++) {
                     for (int l = y_range_min; l <= y_range_max; l++) {
-                        Color c = new Color(image.getRGB(i, j));
-                        red_sum += c.getRed();
-                        green_sum += c.getGreen();
-                        blue_sum += c.getBlue();
+                        Color c = new Color(image.getRGB(k, l));
+                        c.g
+                        red_sum += c.getRed(k, l)%255;
+                        green_sum += c.getGreen()%255;
+                        blue_sum += c.getBlue()%255;
                     }
                 }
                 double num_pixels = (x_range_max - x_range_min) * (y_range_max - y_range_min);
@@ -123,7 +136,7 @@ public class Filtres {
                 result.setRGB(i, j, c1.getRGB());
             }
         }
-        
+        */
         return result;
     }
     
