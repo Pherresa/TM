@@ -81,7 +81,7 @@ public class Main {
                 
                 //image = filtre.binaritzacio(image, 70);
                 image = filtre.negatiu(image);
-                //image = filtre.averaging(image, 3);
+                //image = filtre.averaging(image, 4);
                 
                 // Estos dos son opcionales, solo quiero probar.
                 //image = filtre.B_N(image);
