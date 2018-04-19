@@ -61,26 +61,25 @@ public class Main {
         JLabel jlabel = new JLabel(); // Etiqueta donde metemos imagen y este metemos en la ventana.
         ZipFile zf; // Para abrir archivos .zip
         ZipEntry entry;
-        FileOutputStream fous;
         ZipOutputStream zous;
                 
         try{
-            // Abrimos archivo zip
+            // Abrimos archivo zip de donde cogemos imagenes.
             zf = new ZipFile(this.args.getInput());
-            fous = new FileOutputStream(this.args.getOutput());
-            zous = new ZipOutputStream(fous); // Zip donde guardaremos.
+            // Zip donde guardaremos las imagenes.
+            zous = new ZipOutputStream(new FileOutputStream(this.args.getOutput()));
             
             // Convertimos en "lista" la entrada de imagenes.
             Enumeration<? extends ZipEntry> entries = zf.entries();
             
-            // Comenzamos bucle, mientras haya imagen reproduce.
-            int i = 0;
+            //** CARGAMOS Y GUARDAMOS IMAGENES, CON FILTRO SI HACE FALTA **//
+            int i = 0; // variable de prueba.
             while(entries.hasMoreElements()) {               
                 // Obtenemos una imagen.
                 entry = entries.nextElement();
                 image = ImageIO.read(zf.getInputStream(entry));
                 
-                /** APLICAMOS FILTROS **/
+                //** APLICAMOS FILTROS **//
                 
                 //image = filtre.binaritzacio(image, 70);
                 //image = filtre.negatiu(image);
@@ -90,21 +89,23 @@ public class Main {
                 //image = filtre.B_N(image);
                 //image = filtre.sepia(image);
                 
-                /** HASTA AQUI FILTROS **/
+                //** HASTA AQUI FILTROS **//
                 
                 images.add(image); // Añadimos a la lista para despues reproducir.
                 
-                //** Guardamos en ZIP **//
+                //** GUARDAMOS IMAGEN EN .zip **//
+                // TODO
+                // zous.putNextEntry(new ZipEntry("result"+i+".jpeg"));
+                // ImageIO.write(image, "jpeg", zous);
                 
-                //System.out.println(entry.getName());
-                //zous.putNextEntry(entry);
-                //ImageIO.write(image, "jpeg", new File("image"+i+".jpeg"));
                 i++;
             }
-            zf.close(); // Cerramos archivo .zip
+            // Cerramos zips, tanto el de entrada como salida.
+            //zou.close();
+            zf.close();
             
-            // Pasamos a reproducir el video.
-            // Visualizamos ventana.
+            //** REPRODUCIMOS VIDEO. **//
+            // Visualizamos imagenes.
             frame.setVisible(true);
             for (BufferedImage img : images) {
                 
