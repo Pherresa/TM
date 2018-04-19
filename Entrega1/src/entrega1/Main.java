@@ -9,8 +9,6 @@ import entrega1.Parser.ArgumentParser;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,11 +30,15 @@ public class Main {
     ArgumentParser args;
     /**
      * @param args the command line arguments
-     * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) {
         ArgumentParser arguments = new ArgumentParser();
         try{
+           
+            if(args.length < 4) { // Si no hay parametros suficientes, paramos ejecucion.
+                throw new UnsupportedOperationException("ERROR: faltan parametros"); 
+            }
+            
             JCommander jc = new JCommander(arguments, args);
             Main main2 = new Main(arguments);
             
@@ -47,6 +49,7 @@ public class Main {
 
     private Main(ArgumentParser arguments) {
         this.args = arguments;
+        
         boolean aver = false;
         boolean bina = false;
         if (arguments.getAveraging() != 0){
@@ -55,11 +58,11 @@ public class Main {
         if(arguments.getBinarizaton() != 0){
             bina = true;
         }
-        //TODO ABRIR ZIP, LEER IMAGENES Y APLICAR FILTROS.
         
         // Para poder mostrar a los fps que pida user.
         long time_before, time_after;
-        int fps = 1; // AHora mismo imprimo cada 1 segundo.
+        
+        int fps = args.getFps(); // AHora mismo imprimo cada 1 segundo.
         int ms_sleep;
        
         BufferedImage image; // Imagen a mostrar.
@@ -90,18 +93,11 @@ public class Main {
                     image = filtre.binaritzacio(image, arguments.getBinarizaton());
                 }
                 if(aver){
-                    //BufferedImage bn = filtre.B_N(image);
                     image = filtre.averaging(image, arguments.getAveraging());
                 }
                 if(arguments.isNegative()){
                     image = filtre.negatiu(image);
                 }
-                
-                // Estos dos son opcionales, solo quiero probar.
-                //image = filtre.B_N(image);
-                //image = filtre.sepia(image);
-                
-                //** HASTA AQUI FILTROS **//
                 
                 images.add(image); // Añadimos a la lista para despues reproducir.
                 
@@ -137,6 +133,8 @@ public class Main {
                     
                 }
             }
+            frame.setVisible(false);
+            System.exit(0);
 
         }catch(IOException e) {
             

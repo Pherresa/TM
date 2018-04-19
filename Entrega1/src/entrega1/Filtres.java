@@ -78,73 +78,18 @@ public class Filtres {
     
     // Filtra de la mitjana
     public BufferedImage averaging(BufferedImage image, int valor) {
-        int ancho = image.getWidth();
-        int alto = image.getHeight();
-        //BufferedImage result = new BufferedImage(ancho, alto, BufferedImage.TYPE_3BYTE_BGR);
+        
         float weight = 1.0f / (valor * valor);
         float[] data = new float[valor * valor];
 
         for (int i = 0; i < data.length; i++) {
             data[i] = weight;
         }
-        /*
-        int size = valor*valor;
-        float[] kernelData = new float[3];
-        for(int r=0; r<valor; r++){
-                kernelData[r] = 1.0F/(float)size;
-        }
-        */
+
         Kernel kernel = new Kernel(valor,valor,data);
         BufferedImageOp op = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
-        //BufferedImageOp out = new ConvolveOp(new Kernel(valor,valor,data));
         BufferedImage blurred = op.filter(image, null);
-        /*
-        for(int i = 0; i < ancho; i++) {
-            for(int j = 0; j < alto; j++) {
-                double red_sum = 0.0;
-                double green_sum = 0.0;
-                double blue_sum = 0.0;
-                // finds the min x and y values and makes sure there are no out of bounds exceptions
-
-                int x_range_min = i - valor;
-                if (x_range_min < 0) {
-                    x_range_min = 0;
-                }
-
-                int x_range_max = i + valor;
-                if (x_range_max >= ancho) {
-                    x_range_max = ancho - 1;
-                }
-
-                int y_range_min = j - valor;
-                if (y_range_min < 0) {
-                    y_range_min = 0;
-                }
-
-                int y_range_max = j + valor;
-                if (y_range_max >= alto) {
-                    y_range_max = alto - 1;
-                }
-                
-                
-                for (int k = x_range_min; k <= x_range_max; k++) {
-                    for (int l = y_range_min; l <= y_range_max; l++) {
-                        Color c = new Color(image.getRGB(k, l));
-                        c.g
-                        red_sum += c.getRed(k, l)%255;
-                        green_sum += c.getGreen()%255;
-                        blue_sum += c.getBlue()%255;
-                    }
-                }
-                double num_pixels = (x_range_max - x_range_min) * (y_range_max - y_range_min);
-                int red_av = (int) (red_sum/num_pixels);
-                int green_av = (int) (green_sum/num_pixels);
-                int blue_av = (int) (blue_sum/num_pixels);
-                Color c1 = new Color(red_av, green_av, blue_av);
-                result.setRGB(i, j, c1.getRGB());
-            }
-        }
-        */
+        
         return blurred;
     }
     
