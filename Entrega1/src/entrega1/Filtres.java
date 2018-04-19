@@ -122,7 +122,6 @@ public class Filtres {
                 Color c1 = new Color(red_av, green_av, blue_av);
                 result.setRGB(i, j, c1.getRGB());
             }
-                        
         }
         
         return result;

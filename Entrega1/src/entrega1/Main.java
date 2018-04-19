@@ -47,6 +47,14 @@ public class Main {
 
     private Main(ArgumentParser arguments) {
         this.args = arguments;
+        boolean aver = false;
+        boolean bina = false;
+        if (arguments.getAveraging() != 0){
+            aver = true;
+        }
+        if(arguments.getBinarizaton() != 0){
+            bina = true;
+        }
         //TODO ABRIR ZIP, LEER IMAGENES Y APLICAR FILTROS.
         
         // Para poder mostrar a los fps que pida user.
@@ -78,10 +86,15 @@ public class Main {
                 image = ImageIO.read(zf.getInputStream(entries.nextElement()));
                 
                 //** APLICAMOS FILTROS **//
-                
-                //image = filtre.binaritzacio(image, 70);
-                image = filtre.negatiu(image);
-                //image = filtre.averaging(image, 4);
+                if(bina){
+                    image = filtre.binaritzacio(image, 70);
+                }
+                if(aver){
+                    image = filtre.averaging(image, 4);
+                }
+                if(arguments.isNegative()){
+                    image = filtre.negatiu(image);
+                }
                 
                 // Estos dos son opcionales, solo quiero probar.
                 //image = filtre.B_N(image);
