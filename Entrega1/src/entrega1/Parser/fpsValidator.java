@@ -19,7 +19,7 @@ public class fpsValidator implements IParameterValidator {
         int valor = Integer.parseInt(fps);
         
         if(valor < 1)
-            throw new UnsupportedOperationException("ERROR: fps mas pequeño de 1."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("ERROR: fps no puede ser mas pequeño de 1."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

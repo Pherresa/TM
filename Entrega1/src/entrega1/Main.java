@@ -34,10 +34,6 @@ public class Main {
     public static void main(String[] args) {
         ArgumentParser arguments = new ArgumentParser();
         try{
-           
-            if(args.length < 4) { // Si no hay parametros suficientes, paramos ejecucion.
-                throw new UnsupportedOperationException("ERROR: faltan parametros"); 
-            }
             
             JCommander jc = new JCommander(arguments, args);
             Main main2 = new Main(arguments);
