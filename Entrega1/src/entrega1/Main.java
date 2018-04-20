@@ -133,7 +133,7 @@ public class Main {
             System.exit(0);
 
         }catch(IOException e) {
-            
+            System.out.println("ERROR con el archivo zip.");
         }
     }
     
