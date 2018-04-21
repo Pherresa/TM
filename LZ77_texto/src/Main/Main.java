@@ -60,6 +60,11 @@ public class Main {
             
             br.close();
             fr.close();
+            /**
+             * Leer funciona, ahora toca pasarlo a bits, 
+             * comprimir y luego comprovar q a la hora 
+             * de descomprimir funciona bien.
+             */
             
         }catch(FileNotFoundException e) {
             System.out.println("ERROR: file not found");
