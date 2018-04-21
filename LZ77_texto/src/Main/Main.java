@@ -40,11 +40,11 @@ public class Main {
     public Main(Args arguments) {
         this.args = arguments;
         
-        File archivo;
-        FileReader fr;
-        BufferedReader br;
+        File archivo = null;
+        FileReader fr = null;
+        BufferedReader br = null;
         String linea;
-
+        String texto = "";
         try {
             System.out.println(this.args.getInput());
             archivo = new File(this.args.getInput());
@@ -54,14 +54,20 @@ public class Main {
             // Leemos fichero.
             while((linea = br.readLine()) != null) {
                 System.out.println(linea);
+                texto += linea;
             }
+            System.out.println(texto);
+            
+            br.close();
+            fr.close();
+            
         }catch(FileNotFoundException e) {
             System.out.println("ERROR: file not found");
         }catch(IOException i) {
             System.out.println("ERROR: IOException");
+        
         }
         
-
     }
     /**
      *
