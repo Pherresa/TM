@@ -57,6 +57,7 @@ public class txtReader {
             fr = new FileReader(path);
             Scanner scn = new Scanner(fr);
             while (scn.hasNext()) {
+                System.out.println(scn.next());
                 txt_data.append(scn.next() + " ");
             }
         } catch (FileNotFoundException ex) {

@@ -7,10 +7,13 @@ package Main;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 
 /**
@@ -40,39 +43,56 @@ public class Main {
     public Main(Args arguments) {
         this.args = arguments;
         
-        File archivo = null;
-        FileReader fr = null;
-        BufferedReader br = null;
-        String linea;
-        String texto = "";
+        // Para leer de archivo.
+        FileReader fr;
+        BufferedReader br;
+        
+        // Compresion/descompresion.
+        String linea, result;
+        StringBuffer texto = new StringBuffer("");
+        StringBuffer texto_bits;
+        
+        System.out.println("Leemos archivo: "+this.args.getInput());
+        
         try {
-            System.out.println(this.args.getInput());
-            archivo = new File(this.args.getInput());
-            fr = new FileReader(archivo);
+            // Abrimos fichero y el buffer.
+            fr = new FileReader(new File(this.args.getInput()));
             br = new BufferedReader(fr);
-            
+
             // Leemos fichero.
             while((linea = br.readLine()) != null) {
-                System.out.println(linea);
-                texto += linea;
+                // readLine(), coge la linea y borra el salto de linea.
+                // Para tener un string con todo el texto añadimos nosotros
+                // por cada linea que leamos un salto de linea.
+                linea += "\n";
+                texto.append(linea);
             }
-            System.out.println(texto);
-            
+            // Cerramos archivo y buffer.
             br.close();
             fr.close();
-            /**
-             * Leer funciona, ahora toca pasarlo a bits, 
-             * comprimir y luego comprovar q a la hora 
-             * de descomprimir funciona bien.
-             */
+
+            // Llamamos funcion para tranformar el texto en una cadena de bits.
+            texto_bits = txtReader.string2ASCIIbin(texto);
+            System.out.println("Cadena a codificar: " + texto_bits);
+            System.out.println("Tiene de longitud: " + texto_bits.length()+"\n");
+
+            // Comprimimos.
+            result = this.comprimir(texto_bits.toString(),
+                    Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
+            System.out.println("Cadena comprimida: " + result);
+            System.out.println("De longitud: " + result.length() + "\n");
+
+            // Descomprimimos.
+            result = this.descomprimir(result,
+                    Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
+            System.out.println("Cadena descomprimida: " + result);
+            System.out.println("De longitud: " + result.length());
             
-        }catch(FileNotFoundException e) {
-            System.out.println("ERROR: file not found");
-        }catch(IOException i) {
-            System.out.println("ERROR: IOException");
-        
+        } catch(FileNotFoundException e) {
+            System.out.println("ERROR: Archivo no encontrado.");
+        } catch(IOException i) {
+            System.out.println("ERROR: IOException.");
         }
-        
     }
     /**
      *

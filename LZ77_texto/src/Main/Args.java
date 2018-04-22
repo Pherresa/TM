@@ -10,21 +10,18 @@ import com.beust.jcommander.Parameter;
  * @author pablo
  */
 public class Args {
+    @Parameter(names = { "-input", "-i" }, description = "Nombre archivo txt", 
+        validateWith = inputValidator.class, required = true)
+    private String input;
+        
     @Parameter(names = {"-Ment", "-ve"}, description = "Ventana de entrada",
-            validateWith = mentValidator.class)
+            validateWith = mentValidator.class, required = true)
     private String ment;
 
     @Parameter(names = {"-Mdes", "-vd"}, description = "Ventana deslizante",
-            validateWith = mdesValidator.class)
+            validateWith = mdesValidator.class, required = true)
     private String mdes;
-    
-    @Parameter(names = { "-input", "-i" }, description = "Nombre archivo txt", 
-            validateWith = inputValidator.class, required = true)
-    private String input;
-  
-  
-  
-  
+
   
 public boolean checkMdes(){
     boolean b;
