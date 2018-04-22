@@ -25,6 +25,9 @@ public class Args {
   
 public boolean checkMdes(){
     boolean b;
+    System.out.println(this.mdes);
+    System.out.println(this.ment);
+    
     b = Integer.parseInt(this.mdes) < Integer.parseInt(this.ment);
     if (Integer.parseInt(this.mdes) < Integer.parseInt(this.ment)){
         System.out.println("ERROR: La ventana deslizante tiene que ser mayor o igual que la ventana de entrada");

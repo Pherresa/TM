@@ -32,7 +32,9 @@ public class Main {
         
         try{
             JCommander jc = new JCommander(arguments, args);
-            Main main2 = new Main(arguments);
+            if(!arguments.checkMdes()){
+                Main main2 = new Main(arguments);
+            }
             
         }catch(ParameterException e){
             System.out.println("Error: " + e.getMessage());
@@ -52,8 +54,11 @@ public class Main {
         StringBuffer texto = new StringBuffer("");
         StringBuffer texto_bits;
         
-        System.out.println("Leemos archivo: "+this.args.getInput());
+        // Calcular tiempos.
+        long time_inicio, time_final;
+        float tiempo_total;
         
+        System.out.println("Leemos archivo: "+this.args.getInput());
         try {
             // Abrimos fichero y el buffer.
             fr = new FileReader(new File(this.args.getInput()));
@@ -76,6 +81,7 @@ public class Main {
             System.out.println("Cadena a codificar: " + texto_bits);
             System.out.println("Tiene de longitud: " + texto_bits.length()+"\n");
 
+            time_inicio = System.nanoTime();
             // Comprimimos.
             result = this.comprimir(texto_bits.toString(),
                     Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
@@ -86,7 +92,15 @@ public class Main {
             result = this.descomprimir(result,
                     Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
             System.out.println("Cadena descomprimida: " + result);
-            System.out.println("De longitud: " + result.length());
+            System.out.println("De longitud: " + result.length()+"\n");
+            
+            time_final = System.nanoTime();
+            // Pasamos a segundos
+            tiempo_total =(float) (time_final - time_inicio)/1000000000;
+            
+            System.out.println("Tiempo en comprimir y descomprimir");
+            System.out.println("Tiempo en nanosegundos: "+(time_final - time_inicio));
+            System.out.println("Tiempo en segundos: "+tiempo_total);
             
         } catch(FileNotFoundException e) {
             System.out.println("ERROR: Archivo no encontrado.");
