@@ -44,69 +44,50 @@ public class Main {
 
     public Main(Args arguments) {
         this.args = arguments;
-        
-        // Para leer de archivo.
-        FileReader fr;
-        BufferedReader br;
-        
+
         // Compresion/descompresion.
-        String linea, result;
-        StringBuffer texto = new StringBuffer("");
+        String result;
+        StringBuffer texto;
         StringBuffer texto_bits;
         
         // Calcular tiempos.
         long time_inicio, time_final;
-        float tiempo_total;
+        float time_total;
         
         System.out.println("Leemos archivo: "+this.args.getInput());
-        try {
-            // Abrimos fichero y el buffer.
-            fr = new FileReader(new File(this.args.getInput()));
-            br = new BufferedReader(fr);
-
-            // Leemos fichero.
-            while((linea = br.readLine()) != null) {
-                // readLine(), coge la linea y borra el salto de linea.
-                // Para tener un string con todo el texto añadimos nosotros
-                // por cada linea que leamos un salto de linea.
-                linea += "\n";
-                texto.append(linea);
-            }
-            // Cerramos archivo y buffer.
-            br.close();
-            fr.close();
-
-            // Llamamos funcion para tranformar el texto en una cadena de bits.
-            texto_bits = txtReader.string2ASCIIbin(texto);
-            System.out.println("Cadena a codificar: " + texto_bits);
-            System.out.println("Tiene de longitud: " + texto_bits.length()+"\n");
-
-            time_inicio = System.nanoTime();
-            // Comprimimos.
-            result = this.comprimir(texto_bits.toString(),
-                    Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
-            System.out.println("Cadena comprimida: " + result);
-            System.out.println("De longitud: " + result.length() + "\n");
-
-            // Descomprimimos.
-            result = this.descomprimir(result,
-                    Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
-            System.out.println("Cadena descomprimida: " + result);
-            System.out.println("De longitud: " + result.length()+"\n");
-            
-            time_final = System.nanoTime();
-            // Pasamos a segundos
-            tiempo_total =(float) (time_final - time_inicio)/1000000000;
-            
-            System.out.println("Tiempo en comprimir y descomprimir");
-            System.out.println("Tiempo en nanosegundos: "+(time_final - time_inicio));
-            System.out.println("Tiempo en segundos: "+tiempo_total);
-            
-        } catch(FileNotFoundException e) {
-            System.out.println("ERROR: Archivo no encontrado.");
-        } catch(IOException i) {
-            System.out.println("ERROR: IOException.");
-        }
+        System.out.println("Ventana deslizante de: "+this.args.getMdes());
+        System.out.println("Ventana entrada de: "+this.args.getMent());
+        
+        // Llamamos funcion para tranformar el texto en una cadena de bits.
+        texto_bits = txtReader.cargarTxt(this.args.getInput());
+        System.out.println("Cadena a comprimir de longitud: " + texto_bits.length()+"\n");
+        
+        /** COMPRIMIMOS **/
+        time_inicio = System.nanoTime();
+        result = this.comprimir(texto_bits.toString(),
+                Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
+        time_final = System.nanoTime();
+        
+        time_total =(float) (time_final - time_inicio)/1000000000;
+        System.out.println("Tiempo de compresion: "+time_total+" segs.");
+        System.out.println("Cadena comprimida con longitud: " + result.length() + "\n");
+        
+        /** DESCOMPRIMIMOS **/
+        time_inicio = System.nanoTime();
+        result = this.descomprimir(result,
+                Integer.parseInt(this.args.getMdes()), Integer.parseInt(this.args.getMent()));
+        time_final = System.nanoTime();
+        time_total =(float) (time_final - time_inicio)/1000000000;
+        System.out.println("Tiempo de descompresion: "+time_total+" segs.");
+        System.out.println("Cadena descomprimida con longitud: " + result.length()+"\n");
+        
+        /** MOSTRAMOS TEXTO ORIGINAL Y EL DESCOMPRIMIDO **/
+        // Mostramos texto original.
+        texto = txtReader.ASCIIbin2string(txtReader.cargarTxt(this.args.getInput()));
+        System.out.println("Orig: "+texto);
+        // Mostramos el texto despues de descomprimir.
+        texto = txtReader.ASCIIbin2string(new StringBuffer(result));
+        System.out.println("Desc: "+texto);
     }
     /**
      *
@@ -138,7 +119,7 @@ public class Main {
         result = cadena.substring(init_mDes, final_mDes+1);
         
         // Cogemos bits para ventana entrada.
-        // Que sera los bits que iremos comparando en la ventana deslizante.
+        // Que seran los bits que iremos comparando en la ventana deslizante.
         mEnt = cadena.substring(init_mEnt, final_mEnt + 1);
         
         // Mientras la longitud de la ventana entrada que queda
@@ -151,7 +132,7 @@ public class Main {
             // Si llegamos a quedarnos solo con un bit, este bit
             // lo guardamos en result y pasamos a mover ventanas.
             igual = false;
-            for(int vEnt_long_for = long_vEnt; vEnt_long_for >= 1; vEnt_long_for--) {
+            for(int vEnt_long_for = long_vEnt; vEnt_long_for >= 1 && !igual; vEnt_long_for--) {
                 mEnt = cadena.substring(init_mEnt, init_mEnt + vEnt_long_for);
                 // Aquest for per poder arrastrar 
                 // la ventana entrada cap a l'esquerra.
@@ -180,7 +161,9 @@ public class Main {
                         break; // Terminamos for de i.
                     }
                 }
-                // Si hemos llegado aqui por coincidencia no hace falta acortar ventana entrada.
+                
+                // Si hemos llegado aqui por coincidencia, igual = true, no hay que
+                // seguir buscando, terminamos bucle.
                 if(igual) {
                     break;
                 }
@@ -190,26 +173,27 @@ public class Main {
             // sin encontrar ninguna coincidencia anterior,
             // entonces guardamos el primer bit de ventana entrada directamente.
             // Guardaremos (1,1) tal como pide enunciado
+            // y arrastraremos ventanas 1 posicion.
             if(!igual) {
                 bits = int_to_bit(1, long_vEnt);
                 result += bits;
                 bits = int_to_bit(1, long_vDes);
                 result += bits;
-            }
-            
-            // Aqui arrastramos ventana deslizante y entrada.
-            // Segun si hemos encontrado coincidiencia o no.
-            if(igual) { // Si hemos encontrado coincidencia arrastraremos L posiciones.
-                init_mDes +=  l;
-                final_mDes += l;
-                init_mEnt += l;
-                final_mEnt += l;
-            } else { // Si no solo 1 posicion.
+                
+                // Movemos ventanas.
                 init_mDes +=  1;
                 final_mDes += 1;
                 init_mEnt += 1;
                 final_mEnt += 1;
+            } else { 
+                // Si hemos encontrado coincidencia, arrastraremos L posiciones.
+                // Movemos ventanas.
+                init_mDes +=  l;
+                final_mDes += l;
+                init_mEnt += l;
+                final_mEnt += l;
             }
+            
             // Si lo que queda por buscar(vEnt) es menor a la
             // longitud ventana entrada inicial, terminamos.
             if(final_mEnt >= cadena.length()) {
@@ -244,9 +228,13 @@ public class Main {
         // Sabemos que el principio de la cadena comprimida, con longitud vDes, 
         // era el principio de la cadena normal.
         result += cadena.substring(0, long_vDes);
-        // Ejemplo: Si vEnt 4 i mDes 8, avanzaremos de 5 en 5.
-        //for(i = long_vDes; i+num_bits_L+num_bits_D < cadena.length(); i += num_bits_L+num_bits_D) {
-        for(i = long_vDes; i+num_bits_L+num_bits_D < cadena.length(); i += num_bits_L+num_bits_D) {
+        
+        /**
+         * Duracion for: Mientras la longitud de los bits que quedan por descomprimir
+         * sea mayor o igual que la longitud de ventana entrada.
+         * Ejemplo para avanzar: Si vEnt 4 i mDes 8, avanzaremos de 5 en 5 en la cadena.
+         */
+        for(i = long_vDes; cadena.substring(i).length() >= long_vEnt; i += num_bits_L+num_bits_D) {
             // Pasamos los bits de L y D a decimal.
             valorL = bit_to_int(cadena.substring(i, i+num_bits_L));
             valorD = bit_to_int(cadena.substring(i+num_bits_L, i+num_bits_L+num_bits_D));
@@ -254,14 +242,7 @@ public class Main {
             // Empezando en la posicion result.length(), es decir,
             // en la siguiente posicion despues del ultimo elemento,
             // retrocedemos D posiciones y cogemos L bits y añadimos a resultado.
-
-            // Aixo vol dir que els bits que quedan els hem d'afegir a saco.
-            // No son (L,D)
-            if(valorL > valorD) {
-                break;
-            }
             result += result.substring(result.length()-valorD, result.length()-valorD+valorL);
-            
         }
         
         // Lo que nos quede suelto al final lo añadimos a saco.
@@ -303,9 +284,11 @@ public class Main {
             if(i > 0 && bits.charAt(i) == '1' || bits.length() < longitud_bits){
                 // Para añadir 0 al pricinpio de la cadena
                 // Si faltasen bits.
-                for(int j = 0; bits.length() < longitud_bits; j++)
+                while(bits.length() < longitud_bits)
                     bits = "0"+bits;
+                
                 return bits;
+                
             }
         }
         // Si numero de bits es 3 y nos sale un 8 se representa como 1000
