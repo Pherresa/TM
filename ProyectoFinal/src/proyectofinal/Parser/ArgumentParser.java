@@ -17,13 +17,13 @@ public class ArgumentParser {
     @Parameter(names = {"--output", "-o"}, description = "Path to file.zip output",
             required = true, validateWith = outputValidator.class)
     private String output;
-    /*
+    
     @Parameter(names = {"--encode", "-e"}, description = "Encode the images")
     private boolean encode = false;
     
     @Parameter(names = {"--decode", "-d"}, description = "Decode the images")
     private boolean decode = false;
-    */
+    
     @Parameter(names = {"--fps"}, description = "Frames per second to reproduce the video", 
             required = true, validateWith = fpsValidator.class)
     private int fps;
@@ -38,22 +38,26 @@ public class ArgumentParser {
     @Parameter(names = {"--averaging"}, description = "Apply an average filter",
             validateWith = avValidator.class)
     private int averaging = 0;
-    /*
-    @Parameter(names = {"--ntiles"}, description = "Number of tiles X x Y")
-    private ArrayList ntiles = new ArrayList(new ArrayList());
     
-    @Parameter(names = {"--seekRange"}, description = "Maximum displacement while search adjacent tessels")
+    @Parameter(names = {"--ntiles"}, description = "Number of tiles X x Y",
+            validateWith = integerValidator.class)
+    private int ntiles = 0;
+    
+    @Parameter(names = {"--seekRange"}, description = "Maximum displacement while search adjacent tessels",
+            validateWith = integerValidator.class)
     private int seekRange = 1;
     
-    @Parameter(names = {"--GOP",}, description = "GOP")
+    @Parameter(names = {"--GOP",}, description = "GOP", 
+            validateWith = integerValidator.class)
     private int gop = 5;
     
-    @Parameter(names = {"--quality"}, description = "Quality factor to determine if two tessels are coincident")
-    private int quality = 0;
+    @Parameter(names = {"--quality"}, description = "Quality factor to determine if two tessels are coincident",
+            validateWith = floatValidator.class)
+    private float quality = 0;
     
     @Parameter(names = {"-b", "--batch"}, description = "Batch mode")
     private boolean batchMode = false;
-*/
+
     /**
      * @return the input
      */
@@ -81,7 +85,7 @@ public class ArgumentParser {
     public void setOutput(String output) {
         this.output = output;
     }
-/*
+
     public boolean isEncode() {
         return encode;
     }
@@ -97,7 +101,7 @@ public class ArgumentParser {
     public void setDecode(boolean decode) {
         this.decode = decode;
     }
-*/
+
     /**
      * @return the fps
      */
@@ -153,12 +157,12 @@ public class ArgumentParser {
     public void setAveraging(int averaging) {
         this.averaging = averaging;
     }
-/*
-    public ArrayList getNtiles() {
+
+    public int getNtiles() {
         return ntiles;
     }
 
-    public void setNtiles(ArrayList ntiles) {
+    public void setNtiles(int ntiles) {
         this.ntiles = ntiles;
     }
 
@@ -179,12 +183,12 @@ public class ArgumentParser {
     }
 
 
-    public int getQuality() {
+    public float getQuality() {
         return quality;
     }
 
 
-    public void setQuality(int quality) {
+    public void setQuality(float quality) {
         this.quality = quality;
     }
 
@@ -197,5 +201,5 @@ public class ArgumentParser {
     public void setBatchMode(boolean batchMode) {
         this.batchMode = batchMode;
     }
-*/
+
 }
