@@ -18,7 +18,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import proyectofinal.Encode.Encode;
-import proyectofinal.Encode.ReproductorImagenes;
 
 /**
  *
@@ -99,15 +98,21 @@ public class Main {
             zf.close();
             
             //** REPRODUCIMOS VIDEO **//
-            new Thread(new ReproductorImagenes(images, args.getFps())).start();
+            //new Thread(new ReproductorImagenes(images, args.getFps())).start();
             
             /** Encode **/
             /*Encode encode = new Encode(this.args.getNtiles(), 
                     this.args.getSeekRange(), this.args.getGop(), this.args.getQuality());
             */
             // 31 para 10 teselas
-            Encode encode = new Encode(31, 2, 10, 20);
+            long time_before, time_after;
+            time_before = System.currentTimeMillis();
+            
+            Encode encode = new Encode(31, 2, 10, 0.1f);
             encode.codificar(images);
+            
+            time_after = System.currentTimeMillis();
+            System.out.println(time_after-time_before);
             
             
             /** Decode **/

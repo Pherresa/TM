@@ -7,6 +7,8 @@ package proyectofinal.Encode;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 
 /**
@@ -29,17 +31,15 @@ public class Utils {
         int index = 0;
         BufferedImage subImage;
         int tesela_row = 0, tesela_col = 0;
-        System.out.println(imgHeight+" "+imgWidth);
+        
         for(int row = 0; row+height <= imgHeight;  row += height){
             tesela_col = 0;
             for(int col = 0; col+width <= imgWidth; col += width){
-                subImage = img.getSubimage(row, col, width, height);
+                subImage = img.getSubimage(col, row, width, height);
                 teselas.add(new Tesela(row, col, height, width, subImage, 
                         index,tesela_row, tesela_col));
                 index++;
                 tesela_col++;
-                
-                System.out.println(row+" "+col);
             }
             tesela_row++;
         }
@@ -64,12 +64,20 @@ public class Utils {
     }
     
     // Pintar una tesela en negro.
-    public static void tesela_to_black(BufferedImage img, Tesela tesela) {
-        for(int row = tesela.getX(); row < tesela.getHeight(); row ++) {
-            for(int col = tesela.getY(); col < tesela.getWidth(); col++) {
-                img.setRGB(row, col, new Color(0,0,0).getRGB());
+    public static BufferedImage tesela_to_black(BufferedImage img, Tesela tesela) {
+        for(int row = tesela.getX(); row < tesela.getX()+31; row ++) {
+            for(int col = tesela.getY(); col < tesela.getY()+31; col++) {
+                img.setRGB(col, row, new Color(255,255,255).getRGB());
             }
         }
+        return img;
+    }
+    
+    public static BufferedImage copy_img(BufferedImage img) {
+        ColorModel cm = img.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = img.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
     
     
