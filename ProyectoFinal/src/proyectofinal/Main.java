@@ -18,6 +18,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import proyectofinal.Encode.Encode;
+import proyectofinal.Encode.ImagenDatos;
 
 /**
  *
@@ -108,12 +109,33 @@ public class Main {
             long time_before, time_after;
             time_before = System.currentTimeMillis();
             
-            Encode encode = new Encode(31, 2, 10, 0.1f);
-            encode.codificar(images);
+            Encode encode = new Encode(31, 2, 10, 0.5f);
+            ArrayList<ImagenDatos> img_codificadas;
+            img_codificadas = encode.codificar(images);
             
             time_after = System.currentTimeMillis();
+            System.out.print("Tiempo Codificacion: ");
             System.out.println(time_after-time_before);
             
+            /** Guardamos en disco la codificacion **/
+            // Zip donde guardaremos las imagenes.
+            zout = new ZipOutputStream(new FileOutputStream(this.args.getOutput()));
+            //GUARDAMOS IMAGEN EN .zip en formato .jpeg
+            for(int index = 0; index < img_codificadas.size(); index++) {
+                zout.putNextEntry(new ZipEntry("result"+String.format("%02d", index)+".jpeg"));
+                ImageIO.write(img_codificadas.get(index).getImg(), "jpeg", zout);
+                
+            }
+            // Ahora toca guardar los vectores.
+            for(int index = 0; index < img_codificadas.size(); index++) {
+                zout.putNextEntry(new ZipEntry("datos.txt"));
+                
+                ImageIO.write(img_codificadas.get(index).getImg(), "jpeg", zout);
+                
+            }
+            // Cerramos zip.
+            zout.close();
+
             
             /** Decode **/
             

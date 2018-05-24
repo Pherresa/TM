@@ -22,6 +22,7 @@ public class Encode {
     private float quality;
     //private BufferedImage img_reference;
     private ArrayList<BufferedImage> imgs_encodeds = new ArrayList();
+    private ArrayList<ImagenDatos> list_imgs_datos = new ArrayList();
     
     public Encode(int nPixelsTile, int seekRange, int GOP, float quality) {
         this.nPixelsTile = nPixelsTile;
@@ -31,8 +32,9 @@ public class Encode {
         
     }
     /** Codificamos
-     * @param images **/
-    public void codificar(ArrayList<BufferedImage> images) {
+     * @param images
+     * @return  **/
+    public ArrayList<ImagenDatos> codificar(ArrayList<BufferedImage> images) {
         ArrayList<Tesela> teselas;
         int index_img_reference =0;
         BufferedImage img_reference = null, img_copy;
@@ -49,6 +51,7 @@ public class Encode {
                 index_img_reference = index_img;
                 img_reference = images.get(index_img);
                 this.imgs_encodeds.add(Utils.copy_img(img_reference));
+                this.list_imgs_datos.add(new ImagenDatos(img_reference, null));
                 
             } else { // Si no, buscamos coincidencia con la imagen de referencia.
                 img_copy = Utils.copy_img(images.get(index_img));
@@ -74,16 +77,19 @@ public class Encode {
                         datos.add(vector_datos);
                         
                         // Borrar tesela parecida de imagen destino.
-                        //System.out.println(tesela_parecida.getX() +" | "+tesela_parecida.getY());
-                        img_copy = Utils.tesela_to_black(img_copy, tesela_parecida);
+                        //img_copy = Utils.tesela_to_black(img_copy, tesela_parecida);
+                        img_copy = Utils.tesela_to_mean(img_copy, tesela_parecida);
                     }
                     
                 }
                 imgs_encodeds.add(img_copy);
+                this.list_imgs_datos.add(new ImagenDatos(img_copy, datos));
             }
         }
         new Thread(new ReproductorImagenes(imgs_encodeds, 4)).start();
         //new Thread(new ReproductorImagenes(images, 10)).start();
+        
+        return this.list_imgs_datos;
     }
     //Búsqueda logarítmica en 2D (TDL), en cruz.
     private Tesela busqueda_tesela_parecida(Tesela tesela_destino, BufferedImage img_referencia) {
