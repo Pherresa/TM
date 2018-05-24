@@ -39,7 +39,7 @@ public class ArgumentParser {
             validateWith = avValidator.class)
     private int averaging = 0;
     
-    @Parameter(names = {"--ntiles"}, description = "Number of tiles X x Y",
+    @Parameter(names = {"--ntiles"}, description = "Number of pixels for one tile X x Y",
             validateWith = integerValidator.class)
     private int ntiles = 0;
     

@@ -5,7 +5,6 @@
  */
 package proyectofinal;
 
-import proyectofinal.Encode.Filtres;
 import proyectofinal.Parser.ArgumentParser;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -18,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
+import proyectofinal.Encode.Encode;
 import proyectofinal.Encode.ReproductorImagenes;
 
 /**
@@ -98,12 +98,16 @@ public class Main {
             zout.close();
             zf.close();
             
-            
             //** REPRODUCIMOS VIDEO **//
             new Thread(new ReproductorImagenes(images, args.getFps())).start();
             
             /** Encode **/
-            
+            /*Encode encode = new Encode(this.args.getNtiles(), 
+                    this.args.getSeekRange(), this.args.getGop(), this.args.getQuality());
+            */
+            // 31 para 10 teselas
+            Encode encode = new Encode(31, 2, 10, 20);
+            encode.codificar(images);
             
             
             /** Decode **/

@@ -13,21 +13,24 @@ import java.awt.image.BufferedImage;
  */
 public class Tesela {
     /*
-    * x,y posicion inicio de la tesela.
+    * x,y, posicion inicio de la tesela.
     * height, widht lo que ocupara
-    * index, posicion de la tesela en la lista de teselas
     * content, contenido(subImagen) de la tesela.
+    * index, posicion de la tesela en la lista de teselas
+    * tesela_col, tesela_row, nos servira para poder buscar entre teselas.
     */
-    private int x, y, height, width, index;
+    private int x, y, height, width, index, tesela_row, tesela_col;
     private BufferedImage content;
     
-    public Tesela(int x, int y, int h, int w, BufferedImage content, int index) {
+    public Tesela(int x, int y, int h, int w, BufferedImage content, int index, int tesela_row, int tesela_col) {
         this.x = x;
         this.y = y;
         this.height = h;
         this.width = w;
         this.content = content;
         this.index = index;
+        this.tesela_row = tesela_row;
+        this.tesela_col = tesela_col;
     }
     
     public int getX() {
@@ -76,6 +79,22 @@ public class Tesela {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public int getTesela_row() {
+        return tesela_row;
+    }
+
+    public void setTesela_row(int tesela_row) {
+        this.tesela_row = tesela_row;
+    }
+
+    public int getTesela_col() {
+        return tesela_col;
+    }
+
+    public void setTesela_col(int tesela_col) {
+        this.tesela_col = tesela_col;
     }
     
     
