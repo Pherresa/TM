@@ -181,9 +181,9 @@ public class Main {
                     img_datos.add(new ImagenDatos(image, null));
                 }
             }
-            
             new Thread(new ReproductorImagenes(images_codificadas, 8)).start();
             System.out.println(img_datos.get(0).getDatos());
+            
         }catch(IOException e) {
             System.out.println("ERROR con el archivo zip.");
         } catch (ClassNotFoundException ex) {

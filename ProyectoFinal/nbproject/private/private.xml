@@ -3,12 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/chyoonyo7.alumnes/Downloads/ProyectoFinal/src/proyectofinal/Encode/Filtres.java</file>
-            <file>file:/home/chyoonyo7.alumnes/Downloads/ProyectoFinal/src/proyectofinal/Main.java</file>
-            <file>file:/home/chyoonyo7.alumnes/Downloads/ProyectoFinal/src/proyectofinal/Encode/ImagenDatos.java</file>
-            <file>file:/home/chyoonyo7.alumnes/Downloads/ProyectoFinal/src/proyectofinal/Encode/Decode.java</file>
-            <file>file:/home/chyoonyo7.alumnes/Downloads/ProyectoFinal/src/proyectofinal/Encode/Utils.java</file>
-            <file>file:/home/chyoonyo7.alumnes/Downloads/ProyectoFinal/src/proyectofinal/Encode/Encode.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Main.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Parser/binValidator.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Encode/Encode.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Parser/ArgumentParser.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Parser/integerValidator.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Parser/avValidator.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Parser/inputValidator.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Encode/Utils.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Parser/outputValidator.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Encode/ImagenDatos.java</file>
+            <file>file:/C:/Users/pablo/Desktop/TM/ProyectoFinal/src/proyectofinal/Encode/DatosCoincidencia.java</file>
         </group>
     </open-files>
 </project-private>
