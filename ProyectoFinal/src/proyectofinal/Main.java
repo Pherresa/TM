@@ -9,14 +9,23 @@ import proyectofinal.Parser.ArgumentParser;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
+import proyectofinal.Encode.DatosCoincidencia;
 import proyectofinal.Encode.Encode;
 import proyectofinal.Encode.ImagenDatos;
 
@@ -57,6 +66,7 @@ public class Main {
         BufferedImage image; // Imagen a mostrar.
         Filtres filtre = new Filtres(); // Clase donde tenemos implementado los filtros.
         ArrayList<BufferedImage> images = new ArrayList();
+        ArrayList<BufferedImage> images_codificadas = new ArrayList();
         ZipFile zf; // Para abrir archivos .zip
         ZipOutputStream zout;
                 
@@ -109,7 +119,7 @@ public class Main {
             long time_before, time_after;
             time_before = System.currentTimeMillis();
             
-            Encode encode = new Encode(31, 2, 10, 0.5f);
+            Encode encode = new Encode(20, 2, 10, 0.5f);
             ArrayList<ImagenDatos> img_codificadas;
             img_codificadas = encode.codificar(images);
             
@@ -118,7 +128,7 @@ public class Main {
             System.out.println(time_after-time_before);
             
             /** Guardamos en disco la codificacion **/
-            // Zip donde guardaremos las imagenes.
+            // Zip donde guardaremos las imagenes comprimidas.
             zout = new ZipOutputStream(new FileOutputStream(this.args.getOutput()));
             //GUARDAMOS IMAGEN EN .zip en formato .jpeg
             for(int index = 0; index < img_codificadas.size(); index++) {
@@ -126,21 +136,45 @@ public class Main {
                 ImageIO.write(img_codificadas.get(index).getImg(), "jpeg", zout);
                 
             }
-            // Ahora toca guardar los vectores.
+            // Creamos archivo para los vectores.
+            zout.putNextEntry(new ZipEntry("vectores.vec"));
+            ObjectOutputStream ous = new ObjectOutputStream(zout);
+            
             for(int index = 0; index < img_codificadas.size(); index++) {
-                zout.putNextEntry(new ZipEntry("datos.txt"));
-                
-                ImageIO.write(img_codificadas.get(index).getImg(), "jpeg", zout);
-                
+                ous.writeObject(img_codificadas.get(index).getDatos());
             }
-            // Cerramos zip.
+
+            System.out.println("Fin guardar disco");
+            
+            // Cerramos archivos.
+            ous.close();
             zout.close();
 
-            
             /** Decode **/
+            // Abrimos archivo zip de donde cogemos imagenes comprimidas.
+            zf = new ZipFile(this.args.getOutput());
+            ObjectInputStream ois;
+            // Convertimos en "lista" la entrada de imagenes.
+            entries = zf.entries();
+            
+            //** CARGAMOS Y GUARDAMOS IMAGENES CODIFICADAS**//
+            ArrayList<DatosCoincidencia> datos;
+            while(entries.hasMoreElements()) {               
+                if(entries.nextElement().getName().endsWith(".vec")) {
+                    ois = new ObjectInputStream(zf.getInputStream(entries.nextElement()));
+
+                    System.out.println(datos.size());
+                } else {
+                    // Obtenemos una imagen.
+                    image = ImageIO.read(zf.getInputStream(entries.nextElement()));
+                    images_codificadas.add(image);
+                }
+            }
             
         }catch(IOException e) {
             System.out.println("ERROR con el archivo zip.");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

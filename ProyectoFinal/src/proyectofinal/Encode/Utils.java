@@ -80,7 +80,7 @@ public class Utils {
         return img;
     }
     
-    // Pintar una tesela en negro.
+    // Meter en una tesela la media de la tesela.
     public static BufferedImage tesela_to_mean(BufferedImage img, Tesela tesela) {
         Color pixel;
         int sumR = 0, sumG = 0, sumB = 0;
@@ -90,15 +90,41 @@ public class Utils {
                 sumR += pixel.getRed();
                 sumG += pixel.getGreen();
                 sumB += pixel.getBlue();
-                
-                
+
             }
         }
         int size = tesela.getHeight() * tesela.getWidth();
         sumR /= size;
         sumG /= size;
         sumB /= size;
-        //pixel =new Color();
+
+        for(int row = tesela.getX(); row < tesela.getX()+tesela.getHeight(); row ++) {
+            for(int col = tesela.getY(); col < tesela.getY()+tesela.getWidth(); col++) {
+                img.setRGB(col, row, new Color(sumR,sumG,sumB).getRGB());
+                
+            }
+        }
+        return img;
+    }
+    
+    // Meter en una tesela la media de la tesela.
+    public static BufferedImage tesela_to_mean_allImg(BufferedImage img, Tesela tesela) {
+        Color pixel;
+        int sumR = 0, sumG = 0, sumB = 0;
+        for(int row = 0; row < img.getHeight(); row ++) {
+            for(int col = 0; col < img.getWidth(); col++) {
+                pixel = new Color(img.getRGB(col,row));
+                sumR += pixel.getRed();
+                sumG += pixel.getGreen();
+                sumB += pixel.getBlue();
+
+            }
+        }
+        int size = img.getHeight() * img.getWidth();
+        sumR /= size;
+        sumG /= size;
+        sumB /= size;
+
         for(int row = tesela.getX(); row < tesela.getX()+tesela.getHeight(); row ++) {
             for(int col = tesela.getY(); col < tesela.getY()+tesela.getWidth(); col++) {
                 img.setRGB(col, row, new Color(sumR,sumG,sumB).getRGB());
@@ -117,6 +143,7 @@ public class Utils {
     
     
     /** Funciones para pasar a Bytes y viceversa **/
+    /**
     private final String BIG_ENDIAN = "be";
     private final String LITTLE_ENDIAN = "le";
     private final int INT_LENGTH = 4;
@@ -191,4 +218,5 @@ public class Utils {
         
         return result;
     }
+     */
 }

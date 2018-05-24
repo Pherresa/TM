@@ -66,19 +66,21 @@ public class Encode {
                     if(tesela_parecida != null) {
                         count++;
                         //System.out.println("Entro if "+count);
-                        // index creo que se puede borrar.
-                        int index_tesela = tesela_parecida.getIndex();
+                        // Guardamos index de la imagen actual
+                        // y las posiciones x,y de la tesela.
+                        int index_img_destino = index_img;
                         int x = tesela_parecida.getX();
                         int y = tesela_parecida.getY();
                         
                         vector_datos = new DatosCoincidencia(index_img_reference,
-                                index_tesela, x, y);
+                                index_img_destino, x, y);
                         
                         datos.add(vector_datos);
                         
                         // Borrar tesela parecida de imagen destino.
                         //img_copy = Utils.tesela_to_black(img_copy, tesela_parecida);
                         img_copy = Utils.tesela_to_mean(img_copy, tesela_parecida);
+                        //img_copy = Utils.tesela_to_mean_allImg(img_copy, tesela_parecida);
                     }
                     
                 }
@@ -86,7 +88,7 @@ public class Encode {
                 this.list_imgs_datos.add(new ImagenDatos(img_copy, datos));
             }
         }
-        new Thread(new ReproductorImagenes(imgs_encodeds, 4)).start();
+        //new Thread(new ReproductorImagenes(imgs_encodeds, 4)).start();
         //new Thread(new ReproductorImagenes(images, 10)).start();
         
         return this.list_imgs_datos;
