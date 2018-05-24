@@ -14,6 +14,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -153,29 +154,41 @@ public class Main {
             /** Decode **/
             // Abrimos archivo zip de donde cogemos imagenes comprimidas.
             zf = new ZipFile(this.args.getOutput());
+            FileOutputStream fos;
             ObjectInputStream ois;
+            InputStream is;
             // Convertimos en "lista" la entrada de imagenes.
             entries = zf.entries();
             
+            
             //** CARGAMOS Y GUARDAMOS IMAGENES CODIFICADAS**//
             ArrayList<DatosCoincidencia> datos;
-            while(entries.hasMoreElements()) {               
-                if(entries.nextElement().getName().endsWith(".vec")) {
-                    ois = new ObjectInputStream(zf.getInputStream(entries.nextElement()));
+            ArrayList<ImagenDatos>img_datos = new ArrayList();
+            ImagenDatos img_data = new ImagenDatos(null, null);
+            while(entries.hasMoreElements()) {
+                ZipEntry entry =  entries.nextElement();
+                if(entry.getName().endsWith(".vec")) {
+                    ois = new ObjectInputStream(zf.getInputStream(entry));
+                    for(int j = 0; j < images_codificadas.size(); j++) {
+                        img_datos.get(j).setDatos((ArrayList<DatosCoincidencia>) ois.readObject());
+                    }
 
-                    System.out.println(datos.size());
                 } else {
                     // Obtenemos una imagen.
-                    image = ImageIO.read(zf.getInputStream(entries.nextElement()));
+                    image = ImageIO.read(zf.getInputStream(entry));
                     images_codificadas.add(image);
+                    img_data.setImg(image);
+                    img_datos.add(new ImagenDatos(image, null));
                 }
             }
             
+            new Thread(new ReproductorImagenes(images_codificadas, 8)).start();
+            System.out.println(img_datos.get(0).getDatos());
         }catch(IOException e) {
             System.out.println("ERROR con el archivo zip.");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
     
     
