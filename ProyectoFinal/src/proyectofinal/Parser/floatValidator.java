@@ -12,7 +12,7 @@ import com.beust.jcommander.ParameterException;
  *
  * @author pablo
  */
-class floatValidator implements IParameterValidator { 
+public class floatValidator implements IParameterValidator { 
 
     @Override
     public void validate(String string, String value) throws ParameterException {

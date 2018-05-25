@@ -103,83 +103,101 @@ public class Main {
             // Cerramos zips, tanto el de entrada como salida.
             zout.close();
             zf.close();
+                    
 
             /** ENCODE **/
-            time_before = System.currentTimeMillis();
             
-            Encode encode = new Encode(20, 2, 10, 0.3f);
-            ArrayList<ImagenDatos> img_codificadas;
-            img_codificadas = encode.codificar(images);
-            
-            time_after = System.currentTimeMillis();
-            System.out.print("Tiempo Codificacion: ");
-            System.out.println(time_after-time_before);
-            
-            /** Guardamos en disco la codificacion **/
-            // Zip donde guardaremos las imagenes comprimidas.
-            zout = new ZipOutputStream(new FileOutputStream(this.args.getOutput()));
-            //GUARDAMOS IMAGEN EN .zip en formato .jpeg
-            for(int index = 0; index < img_codificadas.size(); index++) {
-                zout.putNextEntry(new ZipEntry("result"+String.format("%02d", index)+".jpeg"));
-                ImageIO.write(img_codificadas.get(index).getImg(), "jpeg", zout);
-                
-            }
-            // Creamos archivo para los vectores.
-            zout.putNextEntry(new ZipEntry("vectores.vec"));
-            ObjectOutputStream ous = new ObjectOutputStream(zout);
-            
-            for(int index = 0; index < img_codificadas.size(); index++) {
-                ous.writeObject(img_codificadas.get(index).getDatos());
-            }
-            
-            // Cerramos archivos.
-            ous.close();
-            zout.close();
+           
+            if(args.isEncode()){
+                System.out.println("Is encode");
+                Encode encode = new Encode(args.getNtiles(), args.getSeekRange(), args.getGop(), args.getQuality());
+                 //tiles, seekRange, gop, quality
+                //Encode encode = new Encode(20, 2, 10, 0.3f
+                ArrayList<ImagenDatos> img_codificadas;
+                time_before = System.currentTimeMillis();
+                img_codificadas = encode.codificar(images);
+                time_after = System.currentTimeMillis();
+                System.out.print("Tiempo Codificacion: ");
+                System.out.println(time_after-time_before);
+                if(!args.isBatchMode()){
+                    new Thread(new ReproductorImagenes(images, args.getFps(),"Original Images", 0, 0)).start();
 
-            /** DECODE **/
-            // Abrimos archivo zip de donde cogemos imagenes comprimidas.
-            zf = new ZipFile(this.args.getOutput());
-            ObjectInputStream ois;
-            
-            // Convertimos en "lista" la entrada de imagenes.
-            entries = zf.entries();
-            
-            
-            //** GUARDAMOS IMAGENES CODIFICADAS**//
-            ArrayList<ImagenDatos>img_datos = new ArrayList();
-            
-            while(entries.hasMoreElements()) {
-                ZipEntry entry =  entries.nextElement();
-                
-                if(entry.getName().endsWith(".vec")) {
-                    ois = new ObjectInputStream(zf.getInputStream(entry));
-                    for(int j = 0; j < img_datos.size(); j++) {                     
-                        img_datos.get(j).setDatos((ArrayList<DatosCoincidencia>) ois.readObject());
-                    }
-
-                } else {
-                    // Obtenemos una imagen.
-                    image = ImageIO.read(zf.getInputStream(entry));
-                    img_datos.add(new ImagenDatos(image, null));
                 }
+                /** Guardamos en disco la codificacion **/
+                // Zip donde guardaremos las imagenes comprimidas.
+                zout = new ZipOutputStream(new FileOutputStream(this.args.getOutput()));
+                //GUARDAMOS IMAGEN EN .zip en formato .jpeg
+                for(int index = 0; index < img_codificadas.size(); index++) {
+                    zout.putNextEntry(new ZipEntry("result"+String.format("%02d", index)+".jpeg"));
+                    ImageIO.write(img_codificadas.get(index).getImg(), "jpeg", zout);
+
+                }
+                // Creamos archivo para los vectores.
+                zout.putNextEntry(new ZipEntry("vectores.vec"));
+                ObjectOutputStream ous = new ObjectOutputStream(zout);
+
+                for(int index = 0; index < img_codificadas.size(); index++) {
+                    ous.writeObject(img_codificadas.get(index).getDatos());
+                }
+
+                // Cerramos archivos.
+                ous.close();
+                zout.close();
             }
             
-            /** Comenzamos a decodificar **/
-            ArrayList<BufferedImage> imgs_decoded;
-            time_before = System.currentTimeMillis();
+            if(args.isDecode()){
+                System.out.println("Is Decode");
+                /** DECODE **/
+                // Abrimos archivo zip de donde cogemos imagenes comprimidas.
+                zf = new ZipFile(this.args.getOutput());
+                ObjectInputStream ois;
+
+                // Convertimos en "lista" la entrada de imagenes.
+                entries = zf.entries();
+
+
+                //** GUARDAMOS IMAGENES CODIFICADAS**//
+                ArrayList<ImagenDatos>img_datos = new ArrayList();
+
+                while(entries.hasMoreElements()) {
+                    ZipEntry entry =  entries.nextElement();
+
+                    if(entry.getName().endsWith(".vec")) {
+                        ois = new ObjectInputStream(zf.getInputStream(entry));
+                        for(int j = 0; j < img_datos.size(); j++) {                     
+                            img_datos.get(j).setDatos((ArrayList<DatosCoincidencia>) ois.readObject());
+                        }
+
+                    } else {
+                        // Obtenemos una imagen.
+                        image = ImageIO.read(zf.getInputStream(entry));
+                        img_datos.add(new ImagenDatos(image, null));
+                    }
+                }
+
+                /** Comenzamos a decodificar **/
+                ArrayList<BufferedImage> imgs_decoded;
+                time_before = System.currentTimeMillis();
+
+                Decode decode = new Decode(img_datos);
+                //decode.decodificar(this.args.getNtiles());
+                imgs_decoded = decode.decodificar();
+
+                time_after = System.currentTimeMillis();
+
+                System.out.print("Tiempo Decodificacion: ");
+                System.out.println(time_after-time_before);
+                if(!args.isBatchMode()){
+                    /** Reproducimos imagenes originales y las decodificadas **/
+                    new Thread(new ReproductorImagenes(imgs_decoded, args.getFps(), "Decoded Images", 350, 0)).start();
+                }
+                
+            }
             
-            Decode decode = new Decode(img_datos);
-            //decode.decodificar(this.args.getNtiles());
-            imgs_decoded = decode.decodificar();
             
-            time_after = System.currentTimeMillis();
-            
-            System.out.print("Tiempo Decodificacion: ");
-            System.out.println(time_after-time_before);
-            
-            /** Reproducimos imagenes originales y las decodificadas **/
-            new Thread(new ReproductorImagenes(images, 8,"Original Images", 0, 0)).start();
-            new Thread(new ReproductorImagenes(imgs_decoded, 8, "Decoded Images", 350, 0)).start();
+          
+           
+           
             
         }catch(IOException e) {
             System.out.println("ERROR con el archivo zip.");

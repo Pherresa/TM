@@ -4,13 +4,14 @@
  * and open the template in the editor.
  */
 package proyectofinal.Parser;
+
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.ParameterException;
 /**
  *
  * @author pablo
  */
-class integerValidator implements IParameterValidator { 
+public class integerValidator implements IParameterValidator { 
 
     @Override
     public void validate(String string, String value) throws ParameterException {
