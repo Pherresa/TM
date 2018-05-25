@@ -19,7 +19,7 @@ public class Encode {
     private int seekRange;
     private int GOP;
     private float quality;
-    private ArrayList<BufferedImage> imgs_encodeds = new ArrayList();
+    //private ArrayList<BufferedImage> imgs_encodeds = new ArrayList();
     private ArrayList<ImagenDatos> list_imgs_datos = new ArrayList();
     
     public Encode(int nPixelsTile, int seekRange, int GOP, float quality) {
@@ -34,7 +34,6 @@ public class Encode {
      * @return  **/
     public ArrayList<ImagenDatos> codificar(ArrayList<BufferedImage> images) {
         ArrayList<Tesela> teselas;
-        int index_img_reference =0;
         BufferedImage img_reference = null, img_copy;
         
         ArrayList<DatosCoincidencia> datos = new ArrayList();
@@ -45,7 +44,6 @@ public class Encode {
             // 0, 5, 10, 15, etc, empezaremos subconjunto.
             // Guardamos imagen tal cual.
             if(index_img % this.GOP == 0) {
-                index_img_reference = index_img;
                 img_reference = images.get(index_img);
                 //this.imgs_encodeds.add(Utils.copy_img(img_reference));
                 this.list_imgs_datos.add(new ImagenDatos(img_reference, null));
@@ -59,16 +57,15 @@ public class Encode {
                 for(Tesela t_destino : teselas) {
                     Tesela tesela_parecida = busqueda_tesela_parecida(t_destino, 
                             img_reference);
+                    
                     if(tesela_parecida != null) {
 
                         // Guardamos index de la imagen actual
                         // y las posiciones x,y de la tesela.
-                        int index_img_destino = index_img;
                         int x = tesela_parecida.getX();
                         int y = tesela_parecida.getY();
                         
-                        vector_datos = new DatosCoincidencia(index_img_reference,
-                                index_img_destino, x, y, this.nPixelsTile);
+                        vector_datos = new DatosCoincidencia(x, y);
                         
                         datos.add(vector_datos);
                         
@@ -87,6 +84,7 @@ public class Encode {
         
         return this.list_imgs_datos;
     }
+    
     //Busqueda FUll (seekRange+1)x(seekrange+1)
     private Tesela busqueda_tesela_parecida(Tesela tesela_destino, BufferedImage img_referencia) {
         float mejor_resta = this.getQuality();

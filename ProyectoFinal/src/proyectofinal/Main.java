@@ -117,6 +117,7 @@ public class Main {
                 time_before = System.currentTimeMillis();
                 img_codificadas = encode.codificar(images);
                 time_after = System.currentTimeMillis();
+                
                 System.out.print("Tiempo Codificacion: ");
                 System.out.println(time_after-time_before);
                 if(!args.isBatchMode()){
@@ -133,7 +134,7 @@ public class Main {
 
                 }
                 // Creamos archivo para los vectores.
-                zout.putNextEntry(new ZipEntry("vectores.vec"));
+                zout.putNextEntry(new ZipEntry("datos.info"));
                 ObjectOutputStream ous = new ObjectOutputStream(zout);
 
                 for(int index = 0; index < img_codificadas.size(); index++) {
@@ -162,7 +163,7 @@ public class Main {
                 while(entries.hasMoreElements()) {
                     ZipEntry entry =  entries.nextElement();
 
-                    if(entry.getName().endsWith(".vec")) {
+                    if(entry.getName().endsWith(".info")) {
                         ois = new ObjectInputStream(zf.getInputStream(entry));
                         for(int j = 0; j < img_datos.size(); j++) {                     
                             img_datos.get(j).setDatos((ArrayList<DatosCoincidencia>) ois.readObject());
@@ -181,7 +182,7 @@ public class Main {
 
                 Decode decode = new Decode(img_datos);
                 //decode.decodificar(this.args.getNtiles());
-                imgs_decoded = decode.decodificar();
+                imgs_decoded = decode.decodificar(this.args.getNtiles());
 
                 time_after = System.currentTimeMillis();
 
@@ -193,12 +194,7 @@ public class Main {
                 }
                 
             }
-            
-            
-          
-           
-           
-            
+
         }catch(IOException e) {
             System.out.println("ERROR con el archivo zip.");
         } catch (ClassNotFoundException ex) {

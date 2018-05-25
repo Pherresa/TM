@@ -25,7 +25,7 @@ public class Decode {
 
     }
     
-    public ArrayList<BufferedImage> decodificar() {
+    public ArrayList<BufferedImage> decodificar(int size_tile) {
         ArrayList<BufferedImage> imgs_decoded = new ArrayList();
         ArrayList<DatosCoincidencia> datos = new ArrayList();
         BufferedImage copy_img;
@@ -54,7 +54,7 @@ public class Decode {
                     int tposX = datos.get(i).getX();
                     int tposY = datos.get(i).getY();
                     
-                    copy_img = Utils.intercambio_tesela(img_base, copy_img, tposX, tposY, datos.get(i).getSize_tesela());
+                    copy_img = Utils.intercambio_tesela(img_base, copy_img, tposX, tposY, size_tile);
                 }
                 // Una vez decodificada añadimos imagen a la lista de imagenes decodificadas.
                 imgs_decoded.add(copy_img);
