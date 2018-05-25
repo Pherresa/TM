@@ -9,6 +9,7 @@ import proyectofinal.Parser.ArgumentParser;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -119,7 +120,10 @@ public class Main {
                 time_after = System.currentTimeMillis();
                 
                 System.out.print("Tiempo Codificacion: ");
-                System.out.println(time_after-time_before);
+                System.out.print(time_after-time_before);
+                System.out.println(" ms.");
+                
+               
                 if(!args.isBatchMode()){
                     new Thread(new ReproductorImagenes(images, args.getFps(),"Original Images", 0, 0)).start();
 
@@ -144,6 +148,14 @@ public class Main {
                 // Cerramos archivos.
                 ous.close();
                 zout.close();
+                
+                //Imprimir ratio compresión
+                File f = new File("imagenesJPEG.zip");
+                float tam = f.length();
+                f = new File(this.args.getOutput());
+                float comprimido = f.length();
+                float ratio = (float)(comprimido/ tam);
+                System.out.println("Ratio compresion (comprimido/ original) : " + ratio);
             }
             
             if(args.isDecode()){
@@ -187,7 +199,8 @@ public class Main {
                 time_after = System.currentTimeMillis();
 
                 System.out.print("Tiempo Decodificacion: ");
-                System.out.println(time_after-time_before);
+                System.out.print(time_after-time_before);
+                System.out.println(" ms.");
                 if(!args.isBatchMode()){
                     /** Reproducimos imagenes originales y las decodificadas **/
                     new Thread(new ReproductorImagenes(imgs_decoded, args.getFps(), "Decoded Images", 350, 0)).start();
