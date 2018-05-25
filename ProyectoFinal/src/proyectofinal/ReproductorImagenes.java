@@ -59,9 +59,10 @@ public class ReproductorImagenes implements Runnable{
                 } catch(InterruptedException e) {
                     
                 }
+                /*
                 if(i+1 == images.size())
                     i = 0;
-                
+                */
             }
             
     }
