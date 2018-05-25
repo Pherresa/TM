@@ -13,15 +13,17 @@ import java.io.Serializable;
  */
 public class DatosCoincidencia implements Serializable {
     private int index_img_referencia;
-    private int index_img_destino;
+    private int index_img_destino; 
+    private int size_tesela;
     private int x;
     private int y;
     
-    public DatosCoincidencia(int index_img_referencia, int index_tesela, int x, int y) {
+    public DatosCoincidencia(int index_img_referencia, int index_tesela, int x, int y, int size) {
         this.index_img_referencia = index_img_referencia;
         this.index_img_destino = index_tesela;
         this.x = x;
         this.y = y;
+        this.size_tesela = size;
     }
 
     public int getIndex_img_referencia() {
@@ -54,6 +56,22 @@ public class DatosCoincidencia implements Serializable {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getIndex_img_destino() {
+        return index_img_destino;
+    }
+
+    public void setIndex_img_destino(int index_img_destino) {
+        this.index_img_destino = index_img_destino;
+    }
+
+    public int getSize_tesela() {
+        return size_tesela;
+    }
+
+    public void setSize_tesela(int size_tesela) {
+        this.size_tesela = size_tesela;
     }
     
     

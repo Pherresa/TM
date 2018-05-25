@@ -24,16 +24,23 @@ public class ReproductorImagenes implements Runnable{
     
     private int fps;
     int ms_sleep;
+    private String title;
+    private int x, y;
         
-    public ReproductorImagenes(ArrayList<BufferedImage> images, int fps) {
+    public ReproductorImagenes(ArrayList<BufferedImage> images, int fps, String title, int x, int y) {
         this.images = images;
         this.fps = fps;
+        this.title = title;
+        this.x = x;
+        this.y = y;
     }
     
     @Override
     public void run() {
         //** REPRODUCIMOS VIDEO. **//
             // Visualizamos imagenes.
+            frame.setLocation(x, y);
+            frame.setTitle(this.title);
             frame.setVisible(true);
             for(int i = 0; i < images.size(); i++) {
                 time_before = System.currentTimeMillis();
@@ -54,10 +61,9 @@ public class ReproductorImagenes implements Runnable{
                 }
                 if(i+1 == images.size())
                     i = 0;
+                
             }
             
-            //frame.setVisible(false);
-            //Thread.currentThread().interrupt();
     }
     
 }

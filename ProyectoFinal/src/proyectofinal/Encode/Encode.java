@@ -8,7 +8,6 @@ package proyectofinal.Encode;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
-import proyectofinal.ReproductorImagenes;
 
 /**
  *
@@ -20,7 +19,6 @@ public class Encode {
     private int seekRange;
     private int GOP;
     private float quality;
-    //private BufferedImage img_reference;
     private ArrayList<BufferedImage> imgs_encodeds = new ArrayList();
     private ArrayList<ImagenDatos> list_imgs_datos = new ArrayList();
     
@@ -41,7 +39,6 @@ public class Encode {
         
         ArrayList<DatosCoincidencia> datos = new ArrayList();
         DatosCoincidencia vector_datos;
-        int count = 0;
         for(int index_img = 0; index_img < images.size(); index_img++) {
             // Si indice es multiplo del valor GOP, quiere decir que empezamos
             // subconjunto de imagenes. Ejemplo, si GOP = 5, para valores index
@@ -50,7 +47,7 @@ public class Encode {
             if(index_img % this.GOP == 0) {
                 index_img_reference = index_img;
                 img_reference = images.get(index_img);
-                this.imgs_encodeds.add(Utils.copy_img(img_reference));
+                //this.imgs_encodeds.add(Utils.copy_img(img_reference));
                 this.list_imgs_datos.add(new ImagenDatos(img_reference, null));
                 
             } else { // Si no, buscamos coincidencia con la imagen de referencia.
@@ -62,10 +59,8 @@ public class Encode {
                 for(Tesela t_destino : teselas) {
                     Tesela tesela_parecida = busqueda_tesela_parecida(t_destino, 
                             img_reference);
-                    
                     if(tesela_parecida != null) {
-                        count++;
-                        //System.out.println("Entro if "+count);
+
                         // Guardamos index de la imagen actual
                         // y las posiciones x,y de la tesela.
                         int index_img_destino = index_img;
@@ -73,65 +68,64 @@ public class Encode {
                         int y = tesela_parecida.getY();
                         
                         vector_datos = new DatosCoincidencia(index_img_reference,
-                                index_img_destino, x, y);
+                                index_img_destino, x, y, this.nPixelsTile);
                         
                         datos.add(vector_datos);
                         
-                        // Borrar tesela parecida de imagen destino.
+                        // "Borramos" tesela parecida de imagen destino.
                         //img_copy = Utils.tesela_to_black(img_copy, tesela_parecida);
                         img_copy = Utils.tesela_to_mean(img_copy, tesela_parecida);
                         //img_copy = Utils.tesela_to_mean_allImg(img_copy, tesela_parecida);
                     }
-                    
                 }
-                imgs_encodeds.add(img_copy);
+                //imgs_encodeds.add(img_copy);
                 this.list_imgs_datos.add(new ImagenDatos(img_copy, datos));
+                datos = new ArrayList();
             }
         }
-        //new Thread(new ReproductorImagenes(imgs_encodeds, 4)).start();
-        //new Thread(new ReproductorImagenes(images, 10)).start();
+        //new Thread(new ReproductorImagenes(imgs_encodeds, 1, "Encoded Images", 700, 0)).start();
         
         return this.list_imgs_datos;
     }
-    //Búsqueda logarítmica en 2D (TDL), en cruz.
+    //Busqueda FUll (seekRange+1)x(seekrange+1)
     private Tesela busqueda_tesela_parecida(Tesela tesela_destino, BufferedImage img_referencia) {
         float mejor_resta = this.getQuality();
         Tesela t_mejor_candidata = null, t_referencia;
         int teselaX, teselaY;
         BufferedImage subImage;
         
-        // Comprobamos solamente en cruz, es decir,
-        // arriba, abajo, izquierda o derecha.
+        // Hacemos una matriz seekrange+1 x seekrange+1
+        // Si seekrange es 2, la matriz sera 3x3, donde el centro
+        // sera la tesela destino.
         for(int x = -this.seekRange; x <= this.seekRange; x++) { 
             if(tesela_destino.getX() + x*this.nPixelsTile < 0 ||
                     tesela_destino.getX() + x*this.nPixelsTile + this.nPixelsTile >= img_referencia.getHeight())  {
-                continue; // Ejemplo, Si estoy arriba del todo, no interesa coger tesela de arriba porque no hay.
-            }
-            for(int y = -this.seekRange; y <= this.seekRange; y++) {
-                if(tesela_destino.getY() + y*this.nPixelsTile < 0 ||
-                        tesela_destino.getY() + y*this.nPixelsTile + this.nPixelsTile >= img_referencia.getWidth()) {
-                    continue;// Ejemplo, Si estoy izquierda del todo, no interesa coger tesela de izquierda.
-                }
                 
-                // Creamos tesela_base para comparar con la de destino.
-                teselaX = tesela_destino.getX() + x*this.nPixelsTile;
-                teselaY = tesela_destino.getY() + y*this.nPixelsTile;
-                
-                subImage = img_referencia.getSubimage(teselaY, teselaX, this.nPixelsTile, this.nPixelsTile);
-                
-                // Guardar index, row y col creo que index lo podemos borrar.
-                t_referencia = new Tesela(teselaX, teselaY, this.nPixelsTile, this.nPixelsTile, 
-                        subImage, tesela_destino.getIndex(), tesela_destino.getTesela_row() + x,
-                        tesela_destino.getTesela_col() + y);
-                
-                if(Float.compare(this.resta(tesela_destino, t_referencia), this.quality) < 0) {
-                    if(Float.compare(this.resta(tesela_destino, t_referencia), mejor_resta) < 0) {
-                        t_mejor_candidata = t_referencia;
-                        mejor_resta = this.resta(tesela_destino, t_referencia);
+            } else {
+                for(int y = -this.seekRange; y <= this.seekRange; y++) {
+                    if(tesela_destino.getY() + y*this.nPixelsTile < 0 ||
+                            tesela_destino.getY() + y*this.nPixelsTile + this.nPixelsTile >= img_referencia.getWidth()) {
+                        continue;// Ejemplo, Si estoy izquierda del todo, no interesa coger tesela de izquierda.
+                    }
+
+                    // Creamos tesela_base para comparar con la de destino.
+                    teselaX = tesela_destino.getX() + x*this.nPixelsTile;
+                    teselaY = tesela_destino.getY() + y*this.nPixelsTile;
+
+                    subImage = img_referencia.getSubimage(teselaY, teselaX, this.nPixelsTile, this.nPixelsTile);
+
+                    // Guardar index, row y col creo que index lo podemos borrar.
+                    t_referencia = new Tesela(teselaX, teselaY, this.nPixelsTile, this.nPixelsTile, 
+                            subImage);
+
+                    if(Float.compare(this.resta(tesela_destino, t_referencia), this.quality) < 0) {
+                        if(Float.compare(this.resta(tesela_destino, t_referencia), mejor_resta) < 0) {
+                            t_mejor_candidata = t_referencia;
+                            mejor_resta = this.resta(tesela_destino, t_referencia);
+                        }
                     }
                 }
             }
-            
         }     
         return t_mejor_candidata;
     }
@@ -144,9 +138,7 @@ public class Encode {
         
         // Restamos las medias de cada tesela
         // destino - base
-        // NO SE SI HACERLO EN VALOR ABSOLUTO O NO
         resta = abs(Utils.calcularMedia(t_destino.getContent()) - Utils.calcularMedia(t_base.getContent()));
-        //resta = Utils.calcularMedia(destino.getContent()) - Utils.calcularMedia(base.getContent());
         return resta;
     }
     

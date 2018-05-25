@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class ImagenDatos implements Serializable{
     private BufferedImage img;
     private ArrayList<DatosCoincidencia>datos;
+
     
     public ImagenDatos(BufferedImage img, ArrayList<DatosCoincidencia> d) {
         this.img = img;
@@ -36,8 +37,7 @@ public class ImagenDatos implements Serializable{
 
     public void setDatos(ArrayList<DatosCoincidencia> datos) {
         this.datos = datos;
-    }
-    
+    }   
     
     
 }

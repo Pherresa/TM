@@ -19,18 +19,16 @@ public class Tesela {
     * index, posicion de la tesela en la lista de teselas
     * tesela_col, tesela_row, nos servira para poder buscar entre teselas.
     */
-    private int x, y, height, width, index, tesela_row, tesela_col;
+    private int x, y, height, width;
     private BufferedImage content;
     
-    public Tesela(int x, int y, int h, int w, BufferedImage content, int index, int tesela_row, int tesela_col) {
+    public Tesela(int x, int y, int h, int w, BufferedImage content) {
         this.x = x;
         this.y = y;
         this.height = h;
         this.width = w;
         this.content = content;
-        this.index = index;
-        this.tesela_row = tesela_row;
-        this.tesela_col = tesela_col;
+
     }
     
     public int getX() {
@@ -38,7 +36,7 @@ public class Tesela {
     }
     
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public int getHeight() {
@@ -73,29 +71,7 @@ public class Tesela {
         this.content = content;
     }
 
-    public int getIndex() {
-        return index;
-    }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public int getTesela_row() {
-        return tesela_row;
-    }
-
-    public void setTesela_row(int tesela_row) {
-        this.tesela_row = tesela_row;
-    }
-
-    public int getTesela_col() {
-        return tesela_col;
-    }
-
-    public void setTesela_col(int tesela_col) {
-        this.tesela_col = tesela_col;
-    }
     
     
 }

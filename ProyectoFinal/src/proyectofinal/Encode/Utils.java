@@ -9,13 +9,8 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -34,22 +29,16 @@ public class Utils {
         int imgHeight = img.getHeight();
         int imgWidth = img.getWidth();
         ArrayList<Tesela> teselas = new ArrayList();
-        int index = 0;
         BufferedImage subImage;
-        int tesela_row = 0, tesela_col = 0;
-        
-        for(int row = 0; row+height <= imgHeight;  row += height){
-            tesela_col = 0;
-            for(int col = 0; col+width <= imgWidth; col += width){
+        int row =0, col=0;
+        for(row = 0; row+height <= imgHeight;  row += height){
+            for(col = 0; col+width <= imgWidth; col += width){
                 subImage = img.getSubimage(col, row, width, height);
-                teselas.add(new Tesela(row, col, height, width, subImage, 
-                        index,tesela_row, tesela_col));
-                index++;
-                tesela_col++;
+                teselas.add(new Tesela(row, col, height, width, subImage));
             }
-            tesela_row++;
         }
-       return teselas;
+
+        return teselas;
     }
     
     // Calcula la media de una imagen.
@@ -59,7 +48,7 @@ public class Utils {
         
         for(int i = 0; i < img.getHeight(); i++) {
             for(int j = 0; j < img.getWidth(); j++) {
-                RGB = new Color(img.getRGB(i, j));
+                RGB = new Color(img.getRGB(j, i));
                 mean += (RGB.getRed()+ RGB.getGreen() + RGB.getBlue()) / 3;
             }
             
@@ -141,82 +130,18 @@ public class Utils {
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
     
-    
-    /** Funciones para pasar a Bytes y viceversa **/
-    /**
-    private final String BIG_ENDIAN = "be";
-    private final String LITTLE_ENDIAN = "le";
-    private final int INT_LENGTH = 4;
-    private final int SHORT_LENGTH = 2;
-    
-    // De DatosCoincidencia a bytes.
-    public InputStream vectorsToInputStream(ArrayList<DatosCoincidencia> datos) {
-        ArrayList<Byte> buff = new ArrayList();
-        
-        for(DatosCoincidencia dato : datos)
-            vectorToByte(buff, dato);
-        
-        // Pasamos lista a bytes.
-        byte[] result = new byte[buff.size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = (byte) buff.get(i);
+    // Meter una tesela de base a destino.
+    public static BufferedImage intercambio_tesela(BufferedImage img_base, BufferedImage img_destino, int tposX, int tposY,int size_tesela) {
+
+        // Cogemos el color de un pixel de la tesela de la imagen base
+        // y la metemos en el mismo pixel per en imagen destino.
+        for(int x = tposX; x < tposX+size_tesela; x++) {
+            for(int y = tposY; y < tposY+size_tesela; y++) {
+                img_destino.setRGB(y, x, img_base.getRGB(y, x));
+            }
         }
-        return new ByteArrayInputStream(result);           
-    }
-    
-    // De Bytes a DatosCoincidencia
-    public ArrayList<DatosCoincidencia> inputStreamToVectors(InputStream stream) {
-        byte[] bytes = inputStreamToByte(stream);
         
-        ArrayList<DatosCoincidencia> datos = new ArrayList();
-        short index_reference_img, index_tesela, x, y;
-        for(int i = 0; i < bytes.length;){
-            index_reference_img = bytesToShort16(new byte[] {bytes[i++],bytes[i++]}, BIG_ENDIAN);
-            x = byteToShort16(bytes[i++]);
-            y = byteToShort16(bytes[i++]);
-            vectors.add(new DVector(reference,x, y));
-        }
-        return vectors;
+        return img_destino;
     }
     
-    private void vectorToByte(ArrayList<Byte> buff, DatosCoincidencia dato){
-        write_short16(buff, (short)dato.getIndex_img_referencia());
-        write_short16(buff, (short)dato.getIndex_tesela());
-        write_shortAs8(buff, (short)dato.getX());
-        write_shortAs8(buff, (short)dato.getY());
-        
-    }
-    
-    private void write_short16(ArrayList<Byte> buff,  short num)
-    {
-        byte bytes[] = new byte[SHORT_LENGTH];
-        short16ToBytes(num,bytes, BIG_ENDIAN);
-        // try with short
-        for(int i = 0; i < SHORT_LENGTH; i++)
-        {
-            buff.add(bytes[i]);
-        }
-    }
-    
-    private byte[] inputStreamToByte(InputStream is){
-        // Define a size if you have an idea of it.
-        ByteArrayOutputStream r = new ByteArrayOutputStream();
-        byte[] read = new byte[512]; // Your buffer size.
-        try {
-            for (int i; -1 != (i = is.read(read)); r.write(read, 0, i));
-            is.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return r.toByteArray();
-    }
-    
-    
-    private short byteToShort16(byte number) {
-        short result;
-        result = (short) number;
-        
-        return result;
-    }
-     */
 }
